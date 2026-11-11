@@ -3,241 +3,288 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kizawa Store</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KIZAWA STORE — Christmas Edition</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--red:#e63946;--bg:#090a0d;--panel:#12141a;--muted:#9296a3}
-body{font-family:Arial,sans-serif;background:var(--bg);color:#fff}
-a{color:inherit;text-decoration:none}
-button{font:inherit;cursor:pointer}
-header{height:75px;border-bottom:1px solid #252832;display:flex;align-items:center;justify-content:space-between;padding:0 7%;position:sticky;top:0;background:#090a0df2;z-index:10}
-.logo{font-size:23px;font-weight:900;letter-spacing:1px}
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
+:root{--red:#e52c42;--gold:#e9bd76;--bg:#08090c;--card:#12151b;--muted:#9298a5}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:white;font-family:Outfit,Arial,sans-serif;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{font-family:inherit;cursor:pointer}
+#snow{position:fixed;inset:0;pointer-events:none;z-index:20;overflow:hidden}
+.flake{position:absolute;top:-30px;color:white;opacity:.8;animation:fall linear infinite;text-shadow:0 0 10px white}
+@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+header{height:78px;padding:0 7%;display:flex;align-items:center;justify-content:space-between;background:#090a0df2;border-bottom:1px solid #29242a;position:sticky;top:0;z-index:15;backdrop-filter:blur(15px)}
+.logo{font-size:25px;font-weight:900;letter-spacing:1px}
 .logo span{color:var(--red)}
-nav{display:flex;gap:28px;color:#c3c5cc;font-size:14px}
-nav a:hover{color:var(--red)}
-.cart{background:#1a1c23;border:1px solid #30333d;color:white;padding:11px 17px;border-radius:8px}
-.hero{padding:90px 7% 85px;background:radial-gradient(ellipse at 80% 30%,#54151d 0,transparent 40%),linear-gradient(120deg,#171016,#090a0d 65%);border-bottom:1px solid #252832}
-.eyebrow{color:#ff737d;text-transform:uppercase;font-size:12px;letter-spacing:3px;margin-bottom:20px}
-.hero h1{font-size:clamp(38px,6vw,65px);max-width:720px;line-height:1.08;margin-bottom:20px}
-.hero h1 span{color:var(--red)}
-.hero p{color:#aeb0b9;line-height:1.7;max-width:530px;margin-bottom:30px}
-.primary{background:var(--red);color:white;border:0;padding:14px 23px;border-radius:8px;font-weight:bold}
-.primary:hover{background:#c82c39}
-.secondary{background:#20222a;color:white;border:1px solid #363943;padding:14px 23px;border-radius:8px;margin-left:10px}
-.stats{display:flex;gap:45px;margin-top:55px;flex-wrap:wrap}
-.stats strong{display:block;font-size:22px}
-.stats small{color:var(--muted)}
-section{padding:65px 7%}
-.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:28px;gap:20px}
-.section-head h2{font-size:30px}
-.section-head p{color:var(--muted);font-size:14px;margin-top:9px}
-.categories{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:15px}
-.category{background:var(--panel);border:1px solid #292c36;padding:22px;border-radius:12px;transition:.2s}
-.category:hover{border-color:var(--red);transform:translateY(-3px)}
-.category .emoji{font-size:29px;margin-bottom:15px}
-.category h3{font-size:16px;margin-bottom:7px}
-.category p{font-size:12px;color:var(--muted)}
-.offers{background:#0d0f14}
-.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:25px}
-.filter{background:#171920;border:1px solid #30333d;color:#c8cad1;padding:9px 15px;border-radius:30px}
-.filter.active,.filter:hover{background:var(--red);border-color:var(--red);color:white}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
-.product{background:var(--panel);border:1px solid #292c36;border-radius:13px;overflow:hidden;transition:.2s}
-.product:hover{transform:translateY(-4px);border-color:#733039}
-.product-art{height:145px;background:linear-gradient(135deg,#30141b,#171920);display:grid;place-items:center;font-size:55px}
-.product-info{padding:20px}
-.product-tag{font-size:10px;color:#ff858d;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
-.product h3{font-size:17px;margin-bottom:9px}
-.product p{color:var(--muted);font-size:13px;line-height:1.5;min-height:39px}
-.product-bottom{display:flex;justify-content:space-between;align-items:center;margin-top:20px}
-.price{font-weight:800;font-size:20px}
-.add{background:var(--red);color:white;border:0;border-radius:7px;padding:10px 13px}
-.add:hover{background:#c82c39}
-.banner{margin:0 7%;padding:35px;background:linear-gradient(100deg,#38151c,#171920);border:1px solid #633039;border-radius:14px;display:flex;justify-content:space-between;align-items:center;gap:20px}
-.banner h2{font-size:25px;margin-bottom:8px}
-.banner p{font-size:13px;color:#c1b5b8}
-.faq{max-width:850px;margin:auto}
-details{background:var(--panel);border:1px solid #292c36;border-radius:9px;padding:19px;margin-bottom:12px}
-summary{cursor:pointer;font-weight:bold}
-details p{color:var(--muted);font-size:14px;line-height:1.6;margin-top:15px}
-footer{border-top:1px solid #252832;padding:35px 7%;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:var(--muted);font-size:13px}
-.overlay{display:none;position:fixed;inset:0;background:#000b;z-index:20;justify-content:flex-end}
+.logo small{font-size:9px;color:var(--gold);display:block;letter-spacing:4px}
+nav{display:flex;gap:28px;color:#c7c8ce;font-size:14px}
+nav a{transition:.2s}
+nav a:hover{color:var(--gold)}
+.cart-button{background:#191a20;border:1px solid #39313a;color:white;padding:12px 17px;border-radius:9px;transition:.2s}
+.cart-button:hover{border-color:var(--red);transform:translateY(-2px)}
+.hero{min-height:570px;padding:100px 8%;position:relative;display:flex;align-items:center;background:radial-gradient(ellipse at 80% 50%,#59131c88,transparent 45%),linear-gradient(110deg,#170d12,#090a0d 70%);overflow:hidden}
+.hero:after{content:"🎄";position:absolute;right:12%;top:50%;transform:translateY(-50%);font-size:clamp(130px,23vw,260px);opacity:.15;filter:drop-shadow(0 0 40px #d52d40);animation:tree 4s ease-in-out infinite}
+@keyframes tree{50%{transform:translateY(-54%) scale(1.06)}}
+.hero-content{position:relative;z-index:2;max-width:700px}
+.pill{display:inline-block;padding:9px 15px;border:1px solid #71303b;border-radius:30px;color:#ff9ba4;background:#49121b55;font-size:12px;letter-spacing:2px;margin-bottom:25px}
+.hero h1{font-size:clamp(42px,7vw,78px);line-height:1.03;font-weight:900;margin-bottom:22px}
+.hero h1 span{color:var(--red);text-shadow:0 0 30px #e52c4255}
+.hero p{color:#aeb1bc;line-height:1.8;max-width:520px;margin-bottom:30px}
+.btn{border:0;border-radius:9px;padding:15px 24px;font-weight:800;transition:.25s;position:relative;overflow:hidden}
+.btn-red{background:linear-gradient(110deg,#b91f32,#ed394d);color:white;box-shadow:0 8px 25px #e52c4233}
+.btn-red:hover{transform:translateY(-4px);box-shadow:0 12px 35px #e52c4270}
+.btn-dark{background:#20232c;border:1px solid #393d48;color:white;margin-left:10px}
+.btn-dark:hover{border-color:var(--gold);transform:translateY(-3px)}
+section{padding:75px 8%}
+.heading{text-align:center;margin-bottom:38px}
+.heading .mini{color:var(--gold);font-size:11px;letter-spacing:4px;margin-bottom:12px}
+.heading h2{font-size:34px}
+.heading p{color:var(--muted);font-size:14px;margin-top:10px}
+.categories{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.cat{background:linear-gradient(140deg,#19171c,#101218);border:1px solid #302a31;padding:25px;border-radius:13px;transition:.25s}
+.cat:hover{transform:translateY(-5px);border-color:#9b3342;box-shadow:0 10px 30px #0008}
+.cat .emoji{font-size:34px;margin-bottom:14px}
+.cat h3{margin-bottom:7px}
+.cat p{font-size:13px;color:var(--muted)}
+.offers{background:linear-gradient(#0d0e13,#100d11)}
+.filters{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:30px}
+.filter{padding:10px 18px;border-radius:30px;background:#191b22;border:1px solid #343640;color:#c6c8d0;transition:.2s}
+.filter:hover,.filter.active{background:var(--red);color:white;border-color:var(--red);box-shadow:0 0 20px #e52c4233}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+.product{background:linear-gradient(150deg,#191a20,#101116);border:1px solid #302d35;border-radius:15px;overflow:hidden;transition:.3s;position:relative}
+.product:hover{transform:translateY(-7px);border-color:#a33343;box-shadow:0 15px 40px #0009}
+.art{height:155px;display:grid;place-items:center;background:radial-gradient(circle,#541922,#211219 55%,#14141a);font-size:60px;position:relative}
+.art:after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent,#ffffff12,transparent);transform:translateX(-100%);transition:.6s}
+.product:hover .art:after{transform:translateX(100%)}
+.info{padding:21px}
+.tag{font-size:10px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
+.info h3{font-size:19px;margin-bottom:9px}
+.info p{color:var(--muted);font-size:13px;line-height:1.5;min-height:40px}
+.bottom{display:flex;align-items:center;justify-content:space-between;margin-top:20px}
+.price{font-size:23px;font-weight:900}
+.add{background:#e52c42;color:white;border:0;border-radius:8px;padding:11px 14px;font-weight:700;transition:.2s}
+.add:hover{background:#ff4b60;transform:scale(1.05)}
+.promo{margin:0 8%;border:1px solid #6a3338;border-radius:17px;padding:35px;background:radial-gradient(ellipse at right,#56151d,#1a1117);display:flex;justify-content:space-between;align-items:center;gap:20px}
+.promo h2{font-size:27px;margin-bottom:8px}
+.promo p{color:#c5b8bd;font-size:14px}
+.faq{max-width:800px;margin:auto}
+details{background:#14161d;border:1px solid #30323a;border-radius:10px;padding:20px;margin-bottom:12px}
+summary{font-weight:700;cursor:pointer}
+details p{color:var(--muted);font-size:14px;line-height:1.7;margin-top:15px}
+footer{border-top:1px solid #292a32;padding:35px 8%;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:#9296a3;font-size:13px}
+.overlay{display:none;position:fixed;inset:0;background:#000b;z-index:30;justify-content:flex-end}
 .overlay.open{display:flex}
-.drawer{background:#11131a;width:min(420px,100%);height:100%;padding:25px;overflow:auto;border-left:1px solid #343640}
-.drawer-head{display:flex;justify-content:space-between;margin-bottom:30px}
-.close{background:none;color:white;border:0;font-size:25px}
-.cart-item{display:flex;justify-content:space-between;padding:15px 0;border-bottom:1px solid #30333d;gap:15px}
-.cart-total{display:flex;justify-content:space-between;margin:25px 0;font-size:20px;font-weight:bold}
-.empty{color:var(--muted);text-align:center;padding:40px 0}
-.notice{font-size:12px;color:var(--muted);line-height:1.5;margin-top:15px}
-@media(max-width:700px){
-header{padding:0 5%}
-nav{gap:12px;font-size:12px}
-.hero{padding:65px 6%}
-section{padding:50px 6%}
-.banner{margin:0 6%;padding:25px}
-.stats{gap:25px}
-}
-@media(max-width:460px){nav a:nth-child(2){display:none}.logo{font-size:18px}}
+.drawer{width:min(440px,100%);height:100%;background:#11131a;border-left:1px solid #38313b;padding:25px;overflow:auto;animation:slide .25s}
+@keyframes slide{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.drawer-head{display:flex;justify-content:space-between;margin-bottom:25px}
+.close{background:none;border:0;color:white;font-size:27px}
+.cart-item{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid #30323b;gap:10px}
+.cart-item small{color:var(--muted)}
+.remove{background:#2b171d;color:#ff8a97;border:1px solid #61303a;padding:8px;border-radius:7px}
+.total{display:flex;justify-content:space-between;font-size:21px;font-weight:900;margin:25px 0}
+.empty{text-align:center;color:var(--muted);padding:40px 0}
+.note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:15px}
+.toast{position:fixed;bottom:25px;left:50%;transform:translate(-50%,100px);background:#1b2420;border:1px solid #38634b;padding:13px 20px;border-radius:10px;z-index:40;transition:.3s;opacity:0}
+.toast.show{transform:translate(-50%,0);opacity:1}
+@media(max-width:700px){header{padding:0 4%}nav{gap:12px;font-size:12px}nav a:nth-child(2){display:none}.hero{padding:75px 6%}.hero:after{right:-15%;opacity:.09}section{padding:55px 6%}.categories{grid-template-columns:1fr}.promo{margin:0 6%;padding:25px;display:block}.promo button{margin-top:20px}.heading h2{font-size:28px}}
 </style>
 </head>
 <body>
 
+<div id="snow"></div>
+
 <header>
-  <a href="#" class="logo">KIZAWA<span>.</span></a>
-  <nav>
-    <a href="#accueil">Accueil</a>
-    <a href="#categories">Catégories</a>
-    <a href="#offres">Offres</a>
-    <a href="#faq">FAQ</a>
-  </nav>
-  <button class="cart" onclick="openCart()">🛒 Panier <span id="count">0</span></button>
+ <a class="logo" href="#home">KIZAWA<span>.</span><small>CHRISTMAS STORE</small></a>
+ <nav>
+  <a href="#home">Accueil</a>
+  <a href="#categories">Catégories</a>
+  <a href="#offres">Offres</a>
+  <a href="#faq">FAQ</a>
+ </nav>
+ <button class="cart-button" onclick="openCart()">🛒 Panier <span id="count">0</span></button>
 </header>
 
 <main>
-<div class="hero" id="accueil">
-  <div class="eyebrow">✦ Bienvenue chez Kizawa Store</div>
-  <h1>Le digital, <span>autrement.</span></h1>
-  <p>Découvre notre sélection de produits numériques, cadeaux et accessoires. Une expérience simple, claire et pensée pour toi.</p>
-  <a href="#offres"><button class="primary">Découvrir les offres →</button></a>
-  <a href="#categories"><button class="secondary">Nos catégories</button></a>
-  <div class="stats">
-    <div><strong>24/7</strong><small>Accès à la boutique</small></div>
-    <div><strong>100%</strong><small>Expérience digitale</small></div>
-    <div><strong>KIZAWA</strong><small>Notre univers</small></div>
-  </div>
-</div>
+<section class="hero" id="home">
+ <div class="hero-content">
+  <div class="pill">❄ CHRISTMAS EDITION 2026 ❄</div>
+  <h1>Welcome to<br><span>KIZAWA STORE.</span></h1>
+  <p>Découvre notre univers digital. Des offres soigneusement sélectionnées, une expérience simple et une ambiance spéciale Noël.</p>
+  <a href="#offres"><button class="btn btn-red">Découvrir les offres →</button></a>
+  <a href="#categories"><button class="btn btn-dark">Explorer</button></a>
+ </div>
+</section>
 
 <section id="categories">
-  <div class="section-head">
-    <div><h2>Nos catégories</h2><p>Explore les univers de Kizawa.</p></div>
-  </div>
-  <div class="categories">
-    <a href="#offres" class="category"><div class="emoji">🎮</div><h3>Gaming</h3><p>Univers gaming</p></a>
-    <a href="#offres" class="category"><div class="emoji">🎁</div><h3>Gift Cards</h3><p>Cartes cadeaux officielles</p></a>
-    <a href="#offres" class="category"><div class="emoji">💻</div><h3>Digital</h3><p>Produits numériques</p></a>
-    <a href="#offres" class="category"><div class="emoji">✨</div><h3>Accessoires</h3><p>Notre sélection</p></a>
-  </div>
+ <div class="heading">
+  <div class="mini">✦ EXPLORE KIZAWA ✦</div>
+  <h2>Nos catégories</h2>
+  <p>Choisis ton univers et découvre nos offres.</p>
+ </div>
+ <div class="categories">
+  <a href="#offres" class="cat"><div class="emoji">💎</div><h3>Nitro</h3><p>Offres numériques autorisées</p></a>
+  <a href="#offres" class="cat"><div class="emoji">🚀</div><h3>Boosts</h3><p>Offres de boost autorisées</p></a>
+  <a href="#offres" class="cat"><div class="emoji">✨</div><h3>Décoration</h3><p>Produits et créations digitales</p></a>
+ </div>
 </section>
 
 <section class="offers" id="offres">
-  <div class="section-head">
-    <div><h2>Nos offres</h2><p>Découvre les produits disponibles chez Kizawa.</p></div>
-    <span style="color:#ff858d;font-size:13px">✦ Sélection Kizawa</span>
-  </div>
-  <div class="filters">
-    <button class="filter active" onclick="filterProducts('all',this)">Tout</button>
-    <button class="filter" onclick="filterProducts('gaming',this)">Gaming</button>
-    <button class="filter" onclick="filterProducts('gift',this)">Gift Cards</button>
-    <button class="filter" onclick="filterProducts('digital',this)">Digital</button>
-  </div>
-  <div class="products" id="products">
-    <article class="product" data-category="gaming">
-      <div class="product-art">🎮</div>
-      <div class="product-info">
-        <div class="product-tag">Gaming</div>
-        <h3>Pack Gaming</h3>
-        <p>Une sélection d'accessoires gaming autorisés.</p>
-        <div class="product-bottom"><span class="price">3,00 €</span><button class="add" onclick="addToCart('Pack Gaming',3)">Ajouter +</button></div>
-      </div>
-    </article>
-    <article class="product" data-category="gift">
-      <div class="product-art">🎁</div>
-      <div class="product-info">
-        <div class="product-tag">Gift Cards</div>
-        <h3>Carte cadeau</h3>
-        <p>Carte cadeau officielle, selon disponibilité.</p>
-        <div class="product-bottom"><span class="price">5,00 €</span><button class="add" onclick="addToCart('Carte cadeau',5)">Ajouter +</button></div>
-      </div>
-    </article>
-    <article class="product" data-category="digital">
-      <div class="product-art">💻</div>
-      <div class="product-info">
-        <div class="product-tag">Digital</div>
-        <h3>Pack Digital</h3>
-        <p>Ressources numériques et créations originales.</p>
-        <div class="product-bottom"><span class="price">2,50 €</span><button class="add" onclick="addToCart('Pack Digital',2.5)">Ajouter +</button></div>
-      </div>
-    </article>
-    <article class="product" data-category="gaming">
-      <div class="product-art">🕹️</div>
-      <div class="product-info">
-        <div class="product-tag">Gaming</div>
-        <h3>Pack Accessoires</h3>
-        <p>Accessoires et contenus autorisés pour joueurs.</p>
-        <div class="product-bottom"><span class="price">4,00 €</span><button class="add" onclick="addToCart('Pack Accessoires',4)">Ajouter +</button></div>
-      </div>
-    </article>
-  </div>
+ <div class="heading">
+  <div class="mini">🎄 CHRISTMAS DEALS 🎄</div>
+  <h2>Nos offres exclusives</h2>
+  <p>Retrouve ici les produits disponibles.</p>
+ </div>
+ <div class="filters">
+  <button class="filter active" onclick="filter('all',this)">Tout</button>
+  <button class="filter" onclick="filter('nitro',this)">Nitro</button>
+  <button class="filter" onclick="filter('boost',this)">Boosts</button>
+  <button class="filter" onclick="filter('deco',this)">Décoration</button>
+ </div>
+ <div class="products" id="products">
+
+  <article class="product" data-type="nitro">
+   <div class="art">💎</div>
+   <div class="info">
+    <div class="tag">✦ Nitro</div>
+    <h3>Nitro Digital</h3>
+    <p>Offre numérique officielle, selon disponibilité.</p>
+    <div class="bottom"><span class="price">3,00 €</span><button class="add" onclick="add('Nitro Digital',3)">Ajouter +</button></div>
+   </div>
+  </article>
+
+  <article class="product" data-type="nitro">
+   <div class="art">🌟</div>
+   <div class="info">
+    <div class="tag">✦ Nitro</div>
+    <h3>Tech Make Nitro</h3>
+    <p>Création ou offre numérique autorisée.</p>
+    <div class="bottom"><span class="price">5,00 €</span><button class="add" onclick="add('Tech Make Nitro',5)">Ajouter +</button></div>
+   </div>
+  </article>
+
+  <article class="product" data-type="deco">
+   <div class="art">✨</div>
+   <div class="info">
+    <div class="tag">✦ Décoration</div>
+    <h3>Tech Make Deco</h3>
+    <p>Décoration et personnalisation numérique.</p>
+    <div class="bottom"><span class="price">5,00 €</span><button class="add" onclick="add('Tech Make Deco',5)">Ajouter +</button></div>
+   </div>
+  </article>
+
+  <article class="product" data-type="boost">
+   <div class="art">🚀</div>
+   <div class="info">
+    <div class="tag">✦ Boosts</div>
+    <h3>Tech Make Boost</h3>
+    <p>Offre numérique autorisée.</p>
+    <div class="bottom"><span class="price">5,00 €</span><button class="add" onclick="add('Tech Make Boost',5)">Ajouter +</button></div>
+   </div>
+  </article>
+
+  <article class="product" data-type="boost">
+   <div class="art">⚡</div>
+   <div class="info">
+    <div class="tag">✦ Boosts · 1 mois</div>
+    <h3>Pack Boost x14</h3>
+    <p>Pack de 14 boosts, sous réserve d'autorisation.</p>
+    <div class="bottom"><span class="price">1,50 €</span><button class="add" onclick="add('Pack Boost x14 — 1 mois',1.5)">Ajouter +</button></div>
+   </div>
+  </article>
+
+  <article class="product" data-type="boost">
+   <div class="art">🎄</div>
+   <div class="info">
+    <div class="tag">✦ Boosts · 3 mois</div>
+    <h3>Pack Boost x14</h3>
+    <p>Pack de 14 boosts, sous réserve d'autorisation.</p>
+    <div class="bottom"><span class="price">2,10 €</span><button class="add" onclick="add('Pack Boost x14 — 3 mois',2.1)">Ajouter +</button></div>
+   </div>
+  </article>
+
+ </div>
 </section>
 
-<div class="banner">
-  <div><h2>Bienvenue dans l'univers Kizawa.</h2><p>Une boutique digitale avec une expérience simple.</p></div>
-  <a href="#offres"><button class="primary">Voir les offres →</button></a>
+<div class="promo">
+ <div><h2>🎅 L'esprit de Noël arrive chez Kizawa !</h2><p>Découvre la boutique et ses nouveautés.</p></div>
+ <a href="#offres"><button class="btn btn-red">Voir la boutique →</button></a>
 </div>
 
 <section id="faq">
-  <div class="section-head"><div><h2>Questions fréquentes</h2><p>Les réponses à tes questions.</p></div></div>
-  <div class="faq">
-    <details><summary>Comment ajouter un produit au panier ?</summary><p>Clique simplement sur le bouton « Ajouter » sous le produit de ton choix.</p></details>
-    <details><summary>Le paiement est-il disponible ?</summary><p>Non, cette version est une maquette. Aucun paiement réel n'est effectué.</p></details>
-    <details><summary>Comment contacter le support ?</summary><p>Ajoute ici ton lien officiel de support lorsque ta boutique sera prête.</p></details>
-    <details><summary>Les produits sont-ils livrés automatiquement ?</summary><p>La livraison automatique n'est pas encore configurée.</p></details>
-  </div>
+ <div class="heading"><div class="mini">BESOIN D'AIDE ?</div><h2>Questions fréquentes</h2></div>
+ <div class="faq">
+  <details><summary>Comment ajouter un produit ?</summary><p>Clique sur « Ajouter + » dans la fiche du produit. Il apparaîtra dans ton panier.</p></details>
+  <details><summary>Comment retirer un produit ?</summary><p>Ouvre ton panier et clique sur « Retirer » à côté du produit.</p></details>
+  <details><summary>Le paiement est-il activé ?</summary><p>Non, cette version est une maquette interactive. Aucun paiement réel n'est effectué.</p></details>
+  <details><summary>Comment contacter le support ?</summary><p>Ajoute ici le lien de ton serveur officiel de support.</p></details>
+ </div>
 </section>
 </main>
 
 <footer>
-  <div><strong style="color:white">KIZAWA STORE</strong><br><br>© 2026 Kizawa Store.</div>
-  <div>Accueil · Offres · FAQ · Support</div>
+ <div><strong style="color:white;font-size:18px">KIZAWA STORE 🎄</strong><p style="margin-top:8px">© 2026 Kizawa Store. Tous droits réservés.</p></div>
+ <div>Accueil · Offres · FAQ · Support</div>
 </footer>
 
-<div class="overlay" id="cartOverlay" onclick="outsideClose(event)">
-  <div class="drawer">
-    <div class="drawer-head"><h2>Ton panier 🛒</h2><button class="close" onclick="closeCart()">×</button></div>
-    <div id="cartItems"><div class="empty">Ton panier est vide.</div></div>
-    <div class="cart-total"><span>Total</span><span id="total">0,00 €</span></div>
-    <button class="primary" style="width:100%" onclick="checkout()">Continuer</button>
-    <p class="notice">Maquette uniquement : aucun paiement réel n'est activé sur cette version.</p>
-  </div>
+<div class="overlay" id="overlay" onclick="outside(event)">
+ <div class="drawer">
+  <div class="drawer-head"><h2>🛒 Mon panier</h2><button class="close" onclick="closeCart()">×</button></div>
+  <div id="items"><div class="empty">Ton panier est vide 🎄</div></div>
+  <div class="total"><span>Total</span><span id="total">0,00 €</span></div>
+  <button class="btn btn-red" style="width:100%" onclick="checkout()">Continuer →</button>
+  <p class="note">Paiement désactivé : cette boutique est actuellement une maquette. Aucun achat réel ne sera effectué.</p>
+ </div>
 </div>
+<div class="toast" id="toast">✓ Produit ajouté au panier !</div>
 
 <script>
+const snow=document.getElementById('snow');
+for(let i=0;i<45;i++){
+ const f=document.createElement('span');
+ f.className='flake';
+ f.textContent=Math.random()>.5?'❄':'·';
+ f.style.left=Math.random()*100+'%';
+ f.style.animationDuration=(6+Math.random()*10)+'s';
+ f.style.animationDelay=(-Math.random()*12)+'s';
+ f.style.fontSize=(9+Math.random()*15)+'px';
+ snow.appendChild(f);
+}
 let cart=[];
-function addToCart(name,price){
+function add(name,price){
  const item=cart.find(x=>x.name===name);
  if(item)item.qty++;
  else cart.push({name,price,qty:1});
- renderCart();
+ render();
+ const toast=document.getElementById('toast');
+ toast.classList.add('show');
+ setTimeout(()=>toast.classList.remove('show'),1800);
 }
-function renderCart(){
+function render(){
  document.getElementById('count').textContent=cart.reduce((s,x)=>s+x.qty,0);
- const area=document.getElementById('cartItems');
- if(!cart.length){area.innerHTML='<div class="empty">Ton panier est vide.</div>';}
- else{
- area.innerHTML=cart.map((x,i)=>`
+ document.getElementById('items').innerHTML=cart.length?cart.map((x,i)=>`
  <div class="cart-item">
- <div><strong>${x.name}</strong><br><small>${x.price.toFixed(2)} € × ${x.qty}</small></div>
- <button class="add" onclick="removeItem(${i})">Retirer</button>
- </div>`).join('');
- }
+  <div><strong>${x.name}</strong><br><small>${x.price.toFixed(2)} € × ${x.qty}</small></div>
+  <button class="remove" onclick="removeItem(${i})">Retirer</button>
+ </div>`).join(''):'<div class="empty">Ton panier est vide 🎄</div>';
  const total=cart.reduce((s,x)=>s+x.price*x.qty,0);
  document.getElementById('total').textContent=total.toFixed(2).replace('.',',')+' €';
 }
-function removeItem(i){cart.splice(i,1);renderCart();}
-function openCart(){document.getElementById('cartOverlay').classList.add('open');}
-function closeCart(){document.getElementById('cartOverlay').classList.remove('open');}
-function outsideClose(e){if(e.target.id==='cartOverlay')closeCart();}
-function checkout(){alert('Le paiement n’est pas encore configuré.');}
-function filterProducts(category,button){
+function removeItem(i){cart.splice(i,1);render();}
+function openCart(){document.getElementById('overlay').classList.add('open')}
+function closeCart(){document.getElementById('overlay').classList.remove('open')}
+function outside(e){if(e.target.id==='overlay')closeCart()}
+function checkout(){alert('Le paiement n’est pas encore activé.')}
+function filter(type,button){
  document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));
  button.classList.add('active');
  document.querySelectorAll('.product').forEach(p=>{
- p.style.display=category==='all'||p.dataset.category===category?'':'none';
+ p.style.display=type==='all'||p.dataset.type===type?'':'none';
  });
 }
-renderCart();
+render();
 </script>
 </body>
 </html>
