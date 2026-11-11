@@ -1,52 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tech Make – Boutique Discord</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#07060a; --surface:#121015; --surface2:#1a171d; --ink:#f4f2f6; --muted:#9a96a3;
+  --line:#2a262e; --red:#f43f5e; --red2:#c81e45; --green:#34d399;
+}
+@media (prefers-color-scheme:light){
+  :root:not([data-theme="dark"]){
+    --bg:#fbf5f6; --surface:#ffffff; --surface2:#f6ebee; --ink:#1d1016; --muted:#6f5d65;
+    --line:#ead7dc; --red:#e11d48; --red2:#be123c; --green:#059669;
+  }
+}
+:root[data-theme="light"]{--bg:#fbf5f6;--surface:#fff;--surface2:#f6ebee;--ink:#1d1016;--muted:#6f5d65;--line:#ead7dc;--red:#e11d48;--red2:#be123c;--green:#059669}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 90px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Outfit",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+   radial-gradient(circle at 0% 55%,rgba(244,63,94,.28),transparent 38%),
+   radial-gradient(circle at 100% 55%,rgba(244,63,94,.28),transparent 38%),
+   radial-gradient(circle at 88% 9%,rgba(255,255,255,.55) 0,rgba(255,255,255,.18) 5%,transparent 12%);
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) body::before{opacity:.35}}
+.snow{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.7;
+  background-image:radial-gradient(2px 2px at 20px 30px,#fff,transparent),radial-gradient(2px 2px at 90px 120px,#fff,transparent),radial-gradient(1.5px 1.5px at 160px 60px,#fff,transparent),radial-gradient(2.5px 2.5px at 230px 180px,#fff,transparent);
+  background-size:260px 220px;animation:fall 14s linear infinite}
+@keyframes fall{to{background-position:-40px 220px}}
+@media (prefers-reduced-motion:reduce){.snow{animation:none}html{scroll-behavior:auto}}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]) .snow{display:none}}
 
-<div class="product-grid">
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+nav{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);z-index:5;margin:12px auto 0;max-width:1040px;
+  display:flex;align-items:center;gap:26px;padding:10px 12px 10px 24px;border:1px solid var(--line);border-radius:99px;
+  background:color-mix(in srgb,var(--surface) 82%,transparent);backdrop-filter:blur(14px)}
+.logo{font-weight:800;font-size:1.5rem;letter-spacing:-.04em;color:var(--ink);text-decoration:none}
+.links{display:flex;gap:22px;flex:1}
+.links a{color:var(--muted);text-decoration:none;font-weight:500}
+.links a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:600;border:0;border-radius:99px;padding:12px 26px;cursor:pointer;text-decoration:none;color:#fff;
+  background:linear-gradient(180deg,var(--red),var(--red2));box-shadow:0 8px 28px -8px var(--red)}
+.btn:hover:not(:disabled){filter:brightness(1.1)}
+.btn.ghost{background:var(--surface2);color:var(--ink);box-shadow:none;border:1px solid var(--line)}
+.btn:focus-visible,.tab:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.btn svg{width:16px;height:16px}
+nav .btn{padding:10px 20px}
 
-  <article class="product-card">
-    <span class="product-tag">NITRO</span>
-    <h3>Nitro Boost</h3>
-    <p>Abonnement de 1 mois avec 2 boosts inclus.</p>
-    <div class="product-price">3,00 €</div>
-    <button class="buy-btn" disabled>Indisponible</button>
-  </article>
+.hero{text-align:center;padding:96px 0 40px}
+.pill{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:7px 18px;font-size:.92rem}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.hero h1{font-size:clamp(2.4rem,7vw,5rem);line-height:1.02;letter-spacing:-.045em;font-weight:800;margin:30px auto 20px;max-width:15ch}
+.hero p{color:var(--muted);font-size:1.15rem;max-width:44ch;margin:0 auto 32px}
+.cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.checks{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;margin-top:34px;color:var(--muted)}
+.checks b{color:var(--ink);font-weight:600}
+.checks span::before{content:"✓";color:var(--green);margin-right:8px;font-weight:800}
 
-  <article class="product-card">
-    <span class="product-tag">BOOST</span>
-    <h3>Server Boost x14 — 1 mois</h3>
-    <p>Pack de 14 boosts serveur pour une durée d'un mois.</p>
-    <div class="product-price">1,50 €</div>
-    <button class="buy-btn" disabled>Indisponible</button>
-  </article>
+section{padding:56px 0}
+h2{font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.03em;margin:0 0 8px;text-align:center}
+.sub{color:var(--muted);text-align:center;margin:0 auto 30px;max-width:48ch}
+.search{display:block;width:100%;max-width:640px;margin:0 auto 20px;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:16px 28px}
+.search::placeholder{color:var(--muted)}
+.tabs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:34px}
+.tab{font:inherit;font-weight:500;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:9px 20px;cursor:pointer}
+.tab[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 
-  <article class="product-card">
-    <span class="product-tag">BOOST</span>
-    <h3>Server Boost x14 — 3 mois</h3>
-    <p>Pack de 14 boosts serveur pour une durée de trois mois.</p>
-    <div class="product-price">2,10 €</div>
-    <button class="buy-btn" disabled>Indisponible</button>
-  </article>
+.product-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+.product-card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column}
+.product-card[hidden]{display:none}
+.thumb{height:130px;display:grid;place-items:center;background:linear-gradient(180deg,var(--surface2),var(--surface));border-bottom:1px solid var(--line);position:relative}
+.icon{width:68px;height:68px;border-radius:18px;background:linear-gradient(180deg,#fff,#c9c6d0);color:#1d1b22;display:grid;place-items:center;font-size:1.9rem}
+.status{position:absolute;top:14px;left:14px;display:inline-flex;align-items:center;gap:7px;font-size:.85rem;font-weight:500;padding:4px 12px;border-radius:99px;border:1px solid color-mix(in srgb,var(--red) 50%,transparent);background:color-mix(in srgb,var(--red) 14%,transparent);color:var(--red)}
+.status::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--red)}
+.body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:6px;flex:1}
+.product-tag{align-self:flex-start;font-size:.82rem;font-weight:500;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:2px 11px}
+.product-card h3{margin:8px 0 0;font-size:1.3rem;letter-spacing:-.02em}
+.product-card p{margin:0;color:var(--muted);font-size:.95rem;flex:1}
+.product-price{font-size:2.2rem;font-weight:800;letter-spacing:-.04em;margin:12px 0;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.buy-btn{width:100%}
+.buy-btn:disabled{background:color-mix(in srgb,var(--red) 35%,var(--surface));box-shadow:none;color:color-mix(in srgb,var(--ink) 70%,transparent);cursor:not-allowed}
+.empty{display:none;text-align:center;color:var(--muted);padding:30px 0}
 
-  <article class="product-card">
-    <span class="product-tag">TECH MAKE</span>
-    <h3>Tech Make Nitro</h3>
-    <p>Une offre dédiée à la personnalisation et aux options Nitro.</p>
-    <div class="product-price">5,00 €</div>
-    <button class="buy-btn" disabled>Indisponible</button>
-  </article>
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.box{border:1px solid var(--line);background:var(--surface);border-radius:20px;padding:24px}
+.box h3{margin:0 0 6px;font-size:1.15rem}.box p{margin:0;color:var(--muted)}
+.step{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;font-weight:600;margin-bottom:12px}
+footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);text-align:center;font-size:.92rem}
+@media (max-width:760px){.links{display:none}nav{justify-content:space-between}.hero{padding-top:64px}}
+</style>
+</head>
+<body>
+<div class="snow" aria-hidden="true"></div>
 
-  <article class="product-card">
-    <span class="product-tag">TECH MAKE</span>
-    <h3>Tech Make Déco</h3>
-    <p>Des éléments de décoration pour personnaliser ton profil.</p>
-    <div class="product-price">5,00 €</div>
-    <button class="buy-btn" disabled>Indisponible</button>
-  </article>
+<nav>
+  <a class="logo" href="#top">TM</a>
+  <div class="links">
+    <a href="#produits">Produits</a>
+    <a href="#avantages">Avantages</a>
+    <a href="#fonctionnement">Fonctionnement</a>
+  </div>
+  <a class="btn" href="#produits">Boutique <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+</nav>
 
-  <article class="product-card">
-    <span class="product-tag">TECH MAKE</span>
-    <h3>Tech Make Boost</h3>
-    <p>Une offre dédiée aux options de boost et à la personnalisation serveur.</p>
-    <div class="product-price">5,00 €</div>
-    <button class="buy-btn" disabled>Indisponible</button>
-  </article>
+<main class="wrap" id="top">
+  <header class="hero">
+    <span class="pill"><i class="dot"></i> Édition de Noël</span>
+    <h1>Tes produits Discord, simplement</h1>
+    <p>Nitro, boosts de serveur et décorations Discord, à petit prix.</p>
+    <div class="cta">
+      <a class="btn" href="#produits">Voir les produits <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a class="btn ghost" href="#support">Support Discord</a>
+    </div>
+    <div class="checks"><span><b>Prix</b> clairs</span><span><b>Support</b> Discord</span><span><b>Commande</b> simple</span></div>
+  </header>
 
-</div>
+  <section id="produits">
+    <h2>Nos produits</h2>
+    <p class="sub">Choisis ton offre et vérifie sa disponibilité.</p>
+    <input class="search" id="q" type="search" placeholder="Rechercher un produit…" aria-label="Rechercher un produit">
+    <div class="tabs" id="tabs">
+      <button class="tab" data-f="all" aria-pressed="true">Tout</button>
+      <button class="tab" data-f="Nitro" aria-pressed="false">Nitro</button>
+      <button class="tab" data-f="Boost" aria-pressed="false">Boost</button>
+      <button class="tab" data-f="Tech Make" aria-pressed="false">Tech Make</button>
+    </div>
+
+    <div class="product-grid" id="grid">
+
+      <article class="product-card" data-cat="Nitro">
+        <div class="thumb"><span class="status">Indisponible</span><div class="icon">◆</div></div>
+        <div class="body">
+          <span class="product-tag">Nitro</span>
+          <h3>Nitro Boost</h3>
+          <p>Abonnement de 1 mois avec 2 boosts inclus.</p>
+          <div class="product-price">3,00 €</div>
+          <button class="btn buy-btn" disabled>Indisponible</button>
+        </div>
+      </article>
+
+      <article class="product-card" data-cat="Boost">
+        <div class="thumb"><span class="status">Indisponible</span><div class="icon">⚡</div></div>
+        <div class="body">
+          <span class="product-tag">Boost</span>
+          <h3>Server Boost x14 — 1 mois</h3>
+          <p>Pack de 14 boosts serveur pour une durée d’un mois.</p>
+          <div class="product-price">1,50 €</div>
+          <button class="btn buy-btn" disabled>Indisponible</button>
+        </div>
+      </article>
+
+      <article class="product-card" data-cat="Boost">
+        <div class="thumb"><span class="status">Indisponible</span><div class="icon">⚡</div></div>
+        <div class="body">
+          <span class="product-tag">Boost</span>
+          <h3>Server Boost x14 — 3 mois</h3>
+          <p>Pack de 14 boosts serveur pour une durée de trois mois.</p>
+          <div class="product-price">2,10 €</div>
+          <button class="btn buy-btn" disabled>Indisponible</button>
+        </div>
+      </article>
+
+      <article class="product-card" data-cat="Tech Make">
+        <div class="thumb"><span class="status">Indisponible</span><div class="icon">♛</div></div>
+        <div class="body">
+          <span class="product-tag">Tech Make</span>
+          <h3>Tech Make Nitro</h3>
+          <p>Une offre dédiée à la personnalisation et aux options Nitro.</p>
+          <div class="product-price">5,00 €</div>
+          <button class="btn buy-btn" disabled>Indisponible</button>
+        </div>
+      </article>
+
+      <article class="product-card" data-cat="Tech Make">
+        <div class="thumb"><span class="status">Indisponible</span><div class="icon">✦</div></div>
+        <div class="body">
+          <span class="product-tag">Tech Make</span>
+          <h3>Tech Make Déco</h3>
+          <p>Des éléments de décoration pour personnaliser ton profil.</p>
+          <div class="product-price">5,00 €</div>
+          <button class="btn buy-btn" disabled>Indisponible</button>
+        </div>
+      </article>
+
+      <article class="product-card" data-cat="Tech Make">
+        <div class="thumb"><span class="status">Indisponible</span><div class="icon">⚡</div></div>
+        <div class="body">
+          <span class="product-tag">Tech Make</span>
+          <h3>Tech Make Boost</h3>
+          <p>Une offre dédiée aux options de boost et à la personnalisation serveur.</p>
+          <div class="product-price">5,00 €</div>
+          <button class="btn buy-btn" disabled>Indisponible</button>
+        </div>
+      </article>
+
+    </div>
+    <div class="empty" id="empty">Aucun produit ne correspond à ta recherche.</div>
+  </section>
+
+  <section id="avantages">
+    <h2>Pourquoi Tech Make</h2>
+    <p class="sub">Une boutique simple, pensée pour les serveurs Discord.</p>
+    <div class="cols">
+      <div class="box"><h3>Prix clairs</h3><p>Chaque offre affiche son prix et sa durée, sans frais cachés.</p></div>
+      <div class="box"><h3>Stock en direct</h3><p>Les produits en rupture sont signalés directement sur la carte.</p></div>
+      <div class="box"><h3>Aide sur Discord</h3><p>Une question avant ou après ta commande ? Écris-nous sur Discord.</p></div>
+    </div>
+  </section>
+
+  <section id="fonctionnement">
+    <h2>Comment ça marche</h2>
+    <p class="sub">Trois étapes pour passer commande.</p>
+    <div class="cols">
+      <div class="box"><span class="step">1</span><h3>Choisis</h3><p>Sélectionne le produit qui correspond à ton serveur ou ton profil.</p></div>
+      <div class="box"><span class="step">2</span><h3>Paie</h3><p>Valide ta commande avec le moyen de paiement proposé.</p></div>
+      <div class="box"><span class="step">3</span><h3>Reçois</h3><p>Récupère ton produit et contacte le support en cas de besoin.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer id="support"><div class="wrap">© Tech Make · Support via notre serveur Discord</div></footer>
+
+<script>
+(function()
