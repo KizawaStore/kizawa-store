@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Tech Make – Boutique Discord</title>
+<title>Kizawa – Boutique Discord</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;800&display=swap" rel="stylesheet">
 <style>
@@ -46,13 +46,15 @@ nav{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);z-index:5;marg
 .links{display:flex;gap:22px;flex:1}
 .links a{color:var(--muted);text-decoration:none;font-weight:500}
 .links a:hover{color:var(--ink)}
+.navr{display:flex;gap:8px;align-items:center}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:inherit;font-weight:600;border:0;border-radius:99px;padding:12px 26px;cursor:pointer;text-decoration:none;color:#fff;
   background:linear-gradient(180deg,var(--red),var(--red2));box-shadow:0 8px 28px -8px var(--red)}
 .btn:hover:not(:disabled){filter:brightness(1.1)}
 .btn.ghost{background:var(--surface2);color:var(--ink);box-shadow:none;border:1px solid var(--line)}
-.btn:focus-visible,.tab:focus-visible,input:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.btn:focus-visible,.tab:focus-visible,input:focus-visible,.opt:focus-visible,.x:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 .btn svg{width:16px;height:16px}
 nav .btn{padding:10px 20px}
+.count{background:var(--red);color:#fff;border-radius:99px;min-width:22px;height:22px;display:inline-grid;place-items:center;font-size:.8rem;padding:0 6px}
 
 .hero{text-align:center;padding:96px 0 40px}
 .pill{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:7px 18px;font-size:.92rem}
@@ -78,15 +80,14 @@ h2{font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.03em;margin:0 0 8px;text-
 .product-card[hidden]{display:none}
 .thumb{height:130px;display:grid;place-items:center;background:linear-gradient(180deg,var(--surface2),var(--surface));border-bottom:1px solid var(--line);position:relative}
 .icon{width:68px;height:68px;border-radius:18px;background:linear-gradient(180deg,#fff,#c9c6d0);color:#1d1b22;display:grid;place-items:center;font-size:1.9rem}
-.status{position:absolute;top:14px;left:14px;display:inline-flex;align-items:center;gap:7px;font-size:.85rem;font-weight:500;padding:4px 12px;border-radius:99px;border:1px solid color-mix(in srgb,var(--red) 50%,transparent);background:color-mix(in srgb,var(--red) 14%,transparent);color:var(--red)}
-.status::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--red)}
+.status{position:absolute;top:14px;left:14px;display:inline-flex;align-items:center;gap:7px;font-size:.85rem;font-weight:500;padding:4px 12px;border-radius:99px;border:1px solid color-mix(in srgb,var(--green) 50%,transparent);background:color-mix(in srgb,var(--green) 14%,transparent);color:var(--green)}
+.status::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green)}
 .body{padding:20px 22px 22px;display:flex;flex-direction:column;gap:6px;flex:1}
 .product-tag{align-self:flex-start;font-size:.82rem;font-weight:500;color:var(--muted);border:1px solid var(--line);border-radius:99px;padding:2px 11px}
 .product-card h3{margin:8px 0 0;font-size:1.3rem;letter-spacing:-.02em}
 .product-card p{margin:0;color:var(--muted);font-size:.95rem;flex:1}
 .product-price{font-size:2.2rem;font-weight:800;letter-spacing:-.04em;margin:12px 0;padding-bottom:14px;border-bottom:1px solid var(--line)}
 .buy-btn{width:100%}
-.buy-btn:disabled{background:color-mix(in srgb,var(--red) 35%,var(--surface));box-shadow:none;color:color-mix(in srgb,var(--ink) 70%,transparent);cursor:not-allowed}
 .empty{display:none;text-align:center;color:var(--muted);padding:30px 0}
 
 .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
@@ -94,37 +95,74 @@ h2{font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.03em;margin:0 0 8px;text-
 .box h3{margin:0 0 6px;font-size:1.15rem}.box p{margin:0;color:var(--muted)}
 .step{display:inline-grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--red);color:#fff;font-weight:600;margin-bottom:12px}
 footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);text-align:center;font-size:.92rem}
-@media (max-width:760px){.links{display:none}nav{justify-content:space-between}.hero{padding-top:64px}}
+
+/* panier + paiement */
+.veil{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.62);display:none}
+.veil.on{display:block}
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:21;width:min(420px,100%);background:var(--surface);border-left:1px solid var(--line);
+  padding:calc(env(safe-area-inset-top,0px) + 20px) 22px calc(env(safe-area-inset-bottom,0px) + 20px);display:none;flex-direction:column;gap:14px}
+.drawer.on{display:flex}
+.head{display:flex;justify-content:space-between;align-items:center}
+.head h3{margin:0;font-size:1.3rem}
+.x{background:var(--surface2);border:1px solid var(--line);color:var(--ink);width:36px;height:36px;border-radius:50%;cursor:pointer;font:inherit;font-size:1.1rem}
+.lines{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.line{display:flex;justify-content:space-between;gap:12px;align-items:center;border:1px solid var(--line);background:var(--surface2);border-radius:16px;padding:12px 14px}
+.line b{display:block;font-weight:600}.line small{color:var(--muted)}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font:inherit}
+.total{display:flex;justify-content:space-between;font-size:1.2rem;font-weight:600}
+.muted{color:var(--muted)}
+.modal{position:fixed;z-index:22;left:50%;top:50%;transform:translate(-50%,-50%);width:min(540px,calc(100% - 24px));max-height:calc(100% - 24px);overflow-y:auto;
+  background:var(--surface);border:1px solid var(--line);border-radius:26px;display:none}
+.modal.on{display:block}
+.mhead{padding:22px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.mhead small{color:var(--muted);display:block}
+.mhead b{font-size:1.3rem}
+.mbody{padding:22px 24px 24px;display:flex;flex-direction:column;gap:14px}
+.mbody h4{margin:6px 0 0;font-size:1.05rem}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.opt{font:inherit;color:var(--ink);text-align:left;background:var(--surface2);border:1.5px solid var(--line);border-radius:18px;padding:16px;cursor:pointer}
+.opt[aria-checked="true"]{border-color:var(--ink)}
+.opt b{display:block;font-size:1.1rem}.opt small{color:var(--muted)}
+.mail{font:inherit;color:var(--ink);background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;width:100%}
+.note{color:var(--muted);font-size:.9rem;margin:0}
+.msg{margin:0;padding:12px 14px;border-radius:14px;background:var(--surface2);border:1px solid var(--line);font-size:.95rem;display:none;word-break:break-word}
+.msg.on{display:block}.msg.err{border-color:var(--red);color:var(--red)}
+.addr{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem}
+@media (max-width:760px){.links{display:none}nav{justify-content:space-between}.hero{padding-top:64px}.opts{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div class="snow" aria-hidden="true"></div>
 
 <nav>
-  <a class="logo" href="#top">TM</a>
+  <a class="logo" href="#top">Kizawa</a>
   <div class="links">
     <a href="#produits">Produits</a>
     <a href="#avantages">Avantages</a>
     <a href="#fonctionnement">Fonctionnement</a>
   </div>
-  <a class="btn" href="#produits">Boutique <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+  <div class="navr">
+    <button class="btn ghost" id="openCart" aria-label="Ouvrir le panier">Panier <span class="count" id="count">0</span></button>
+    <a class="btn" href="#produits">Boutique</a>
+  </div>
 </nav>
 
 <main class="wrap" id="top">
   <header class="hero">
     <span class="pill"><i class="dot"></i> Édition de Noël</span>
     <h1>Tes produits Discord, simplement</h1>
-    <p>Nitro, boosts de serveur et décorations Discord, à petit prix.</p>
+    <p>Nitro, boosts de serveur et décorations Discord. Paiement en Litecoin ou PayPal.</p>
     <div class="cta">
-      <a class="btn" href="#produits">Voir les produits <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-      <a class="btn ghost" href="#support">Support Discord</a>
+      <a class="btn" href="#produits">Voir les produits</a>
+      <a class="btn ghost" href="#support" id="discordTop">Support Discord</a>
     </div>
     <div class="checks"><span><b>Prix</b> clairs</span><span><b>Support</b> Discord</span><span><b>Commande</b> simple</span></div>
   </header>
 
   <section id="produits">
     <h2>Nos produits</h2>
-    <p class="sub">Choisis ton offre et vérifie sa disponibilité.</p>
+    <p class="sub">Ajoute tes offres au panier puis paie en Litecoin ou PayPal.</p>
     <input class="search" id="q" type="search" placeholder="Rechercher un produit…" aria-label="Rechercher un produit">
     <div class="tabs" id="tabs">
       <button class="tab" data-f="all" aria-pressed="true">Tout</button>
@@ -135,69 +173,69 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);t
 
     <div class="product-grid" id="grid">
 
-      <article class="product-card" data-cat="Nitro">
-        <div class="thumb"><span class="status">Indisponible</span><div class="icon">◆</div></div>
+      <article class="product-card" data-cat="Nitro" data-id="nitro-boost" data-name="Nitro Boost" data-price="3">
+        <div class="thumb"><span class="status">Disponible</span><div class="icon">◆</div></div>
         <div class="body">
           <span class="product-tag">Nitro</span>
           <h3>Nitro Boost</h3>
           <p>Abonnement de 1 mois avec 2 boosts inclus.</p>
           <div class="product-price">3,00 €</div>
-          <button class="btn buy-btn" disabled>Indisponible</button>
+          <button class="btn buy-btn add">Ajouter au panier</button>
         </div>
       </article>
 
-      <article class="product-card" data-cat="Boost">
-        <div class="thumb"><span class="status">Indisponible</span><div class="icon">⚡</div></div>
+      <article class="product-card" data-cat="Boost" data-id="boost-1m" data-name="Server Boost x14 — 1 mois" data-price="1.5">
+        <div class="thumb"><span class="status">Disponible</span><div class="icon">⚡</div></div>
         <div class="body">
           <span class="product-tag">Boost</span>
           <h3>Server Boost x14 — 1 mois</h3>
           <p>Pack de 14 boosts serveur pour une durée d’un mois.</p>
           <div class="product-price">1,50 €</div>
-          <button class="btn buy-btn" disabled>Indisponible</button>
+          <button class="btn buy-btn add">Ajouter au panier</button>
         </div>
       </article>
 
-      <article class="product-card" data-cat="Boost">
-        <div class="thumb"><span class="status">Indisponible</span><div class="icon">⚡</div></div>
+      <article class="product-card" data-cat="Boost" data-id="boost-3m" data-name="Server Boost x14 — 3 mois" data-price="2.1">
+        <div class="thumb"><span class="status">Disponible</span><div class="icon">⚡</div></div>
         <div class="body">
           <span class="product-tag">Boost</span>
           <h3>Server Boost x14 — 3 mois</h3>
           <p>Pack de 14 boosts serveur pour une durée de trois mois.</p>
           <div class="product-price">2,10 €</div>
-          <button class="btn buy-btn" disabled>Indisponible</button>
+          <button class="btn buy-btn add">Ajouter au panier</button>
         </div>
       </article>
 
-      <article class="product-card" data-cat="Tech Make">
-        <div class="thumb"><span class="status">Indisponible</span><div class="icon">♛</div></div>
+      <article class="product-card" data-cat="Tech Make" data-id="tm-nitro" data-name="Tech Make Nitro" data-price="5">
+        <div class="thumb"><span class="status">Disponible</span><div class="icon">♛</div></div>
         <div class="body">
           <span class="product-tag">Tech Make</span>
           <h3>Tech Make Nitro</h3>
           <p>Une offre dédiée à la personnalisation et aux options Nitro.</p>
           <div class="product-price">5,00 €</div>
-          <button class="btn buy-btn" disabled>Indisponible</button>
+          <button class="btn buy-btn add">Ajouter au panier</button>
         </div>
       </article>
 
-      <article class="product-card" data-cat="Tech Make">
-        <div class="thumb"><span class="status">Indisponible</span><div class="icon">✦</div></div>
+      <article class="product-card" data-cat="Tech Make" data-id="tm-deco" data-name="Tech Make Déco" data-price="5">
+        <div class="thumb"><span class="status">Disponible</span><div class="icon">✦</div></div>
         <div class="body">
           <span class="product-tag">Tech Make</span>
           <h3>Tech Make Déco</h3>
           <p>Des éléments de décoration pour personnaliser ton profil.</p>
           <div class="product-price">5,00 €</div>
-          <button class="btn buy-btn" disabled>Indisponible</button>
+          <button class="btn buy-btn add">Ajouter au panier</button>
         </div>
       </article>
 
-      <article class="product-card" data-cat="Tech Make">
-        <div class="thumb"><span class="status">Indisponible</span><div class="icon">⚡</div></div>
+      <article class="product-card" data-cat="Tech Make" data-id="tm-boost" data-name="Tech Make Boost" data-price="5">
+        <div class="thumb"><span class="status">Disponible</span><div class="icon">⚡</div></div>
         <div class="body">
           <span class="product-tag">Tech Make</span>
           <h3>Tech Make Boost</h3>
           <p>Une offre dédiée aux options de boost et à la personnalisation serveur.</p>
           <div class="product-price">5,00 €</div>
-          <button class="btn buy-btn" disabled>Indisponible</button>
+          <button class="btn buy-btn add">Ajouter au panier</button>
         </div>
       </article>
 
@@ -206,11 +244,11 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);t
   </section>
 
   <section id="avantages">
-    <h2>Pourquoi Tech Make</h2>
+    <h2>Pourquoi Kizawa</h2>
     <p class="sub">Une boutique simple, pensée pour les serveurs Discord.</p>
     <div class="cols">
       <div class="box"><h3>Prix clairs</h3><p>Chaque offre affiche son prix et sa durée, sans frais cachés.</p></div>
-      <div class="box"><h3>Stock en direct</h3><p>Les produits en rupture sont signalés directement sur la carte.</p></div>
+      <div class="box"><h3>Deux moyens de paiement</h3><p>Paie en Litecoin ou avec PayPal, au choix.</p></div>
       <div class="box"><h3>Aide sur Discord</h3><p>Une question avant ou après ta commande ? Écris-nous sur Discord.</p></div>
     </div>
   </section>
@@ -219,14 +257,147 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);t
     <h2>Comment ça marche</h2>
     <p class="sub">Trois étapes pour passer commande.</p>
     <div class="cols">
-      <div class="box"><span class="step">1</span><h3>Choisis</h3><p>Sélectionne le produit qui correspond à ton serveur ou ton profil.</p></div>
-      <div class="box"><span class="step">2</span><h3>Paie</h3><p>Valide ta commande avec le moyen de paiement proposé.</p></div>
+      <div class="box"><span class="step">1</span><h3>Choisis</h3><p>Ajoute au panier les produits qui correspondent à ton serveur ou ton profil.</p></div>
+      <div class="box"><span class="step">2</span><h3>Paie</h3><p>Indique ton e-mail et règle en Litecoin ou avec PayPal.</p></div>
       <div class="box"><span class="step">3</span><h3>Reçois</h3><p>Récupère ton produit et contacte le support en cas de besoin.</p></div>
     </div>
   </section>
 </main>
 
-<footer id="support"><div class="wrap">© Tech Make · Support via notre serveur Discord</div></footer>
+<footer id="support"><div class="wrap">© Kizawa · Support via notre serveur Discord</div></footer>
+
+<div class="veil" id="veil"></div>
+
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Panier">
+  <div class="head"><h3>Ton panier</h3><button class="x" id="closeCart" aria-label="Fermer">✕</button></div>
+  <div class="lines" id="lines"></div>
+  <div class="total"><span>Total</span><span id="cartTotal">0,00 €</span></div>
+  <button class="btn" id="checkout">Commander</button>
+</aside>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Paiement">
+  <div class="mhead">
+    <div><small>Ta commande</small><b id="mItems">—</b></div>
+    <div style="display:flex;align-items:center;gap:12px"><b id="mTotal">0,00 €</b><button class="x" id="closeModal" aria-label="Fermer">✕</button></div>
+  </div>
+  <div class="mbody">
+    <h4>Choisis ton moyen de paiement</h4>
+    <div class="opts" role="radiogroup" aria-label="Moyen de paiement">
+      <button class="opt" role="radio" aria-checked="true" data-m="ltc"><b>Litecoin</b><small>≈ 2 à 5 min</small></button>
+      <button class="opt" role="radio" aria-checked="false" data-m="paypal"><b>PayPal</b><small>Paiement par compte ou carte</small></button>
+    </div>
+    <h4>Ton e-mail</h4>
+    <input class="mail" id="email" type="email" placeholder="toi@exemple.com" autocomplete="email">
+    <p class="note">Obligatoire : ta commande est envoyée à cette adresse. Vérifie qu’elle est correcte.</p>
+    <button class="btn" id="pay">Payer en LTC</button>
+    <p class="msg" id="msg" aria-live="polite"></p>
+  </div>
+</div>
 
 <script>
-(function()
+(function(){
+  /* ====== À MODIFIER ====== */
+  var CONFIG={
+    paypalUser:"TON_PSEUDO_PAYPAL",   // ton pseudo PayPal.me
+    ltcAddress:"TON_ADRESSE_LITECOIN", // ton adresse Litecoin
+    discord:"#"                        // lien d’invitation Discord
+  };
+  /* ======================== */
+
+  var $=function(s){return document.querySelector(s)};
+  var cart={},method="ltc";
+  var eur=function(n){return n.toFixed(2).replace(".",",")+" €"};
+
+  /* filtres */
+  var cards=[].slice.call(document.querySelectorAll(".product-card"));
+  var tabs=[].slice.call(document.querySelectorAll(".tab"));
+  var q=$("#q"),empty=$("#empty"),f="all";
+  function filter(){
+    var t=q.value.trim().toLowerCase(),n=0;
+    cards.forEach(function(c){
+      var ok=(f==="all"||c.dataset.cat===f)&&c.textContent.toLowerCase().indexOf(t)>-1;
+      c.hidden=!ok;if(ok)n++;
+    });
+    empty.style.display=n?"none":"block";
+  }
+  tabs.forEach(function(b){b.addEventListener("click",function(){
+    f=b.dataset.f;tabs.forEach(function(x){x.setAttribute("aria-pressed",x===b)});filter();
+  })});
+  q.addEventListener("input",filter);
+  $("#discordTop").addEventListener("click",function(e){if(CONFIG.discord!=="#"){e.preventDefault();window.open(CONFIG.discord,"_blank")}});
+
+  /* panier */
+  function total(){return Object.keys(cart).reduce(function(s,k){return s+cart[k].price*cart[k].qty},0)}
+  function render(){
+    var ids=Object.keys(cart),n=0,html="";
+    ids.forEach(function(k){
+      var i=cart[k];n+=i.qty;
+      html+='<div class="line"><div><b>'+i.name+'</b><small>'+eur(i.price)+'</small></div><div class="qty"><button data-a="-" data-k="'+k+'" aria-label="Retirer un">−</button><span>'+i.qty+'</span><button data-a="+" data-k="'+k+'" aria-label="Ajouter un">+</button></div></div>';
+    });
+    $("#lines").innerHTML=html||'<p class="muted">Ton panier est vide. Ajoute un produit pour commencer.</p>';
+    $("#count").textContent=n;
+    $("#cartTotal").textContent=eur(total());
+    $("#checkout").disabled=!ids.length;
+    $("#checkout").style.opacity=ids.length?1:.5;
+  }
+  document.querySelectorAll(".add").forEach(function(b){
+    b.addEventListener("click",function(){
+      var c=b.closest(".product-card"),id=c.dataset.id;
+      if(!cart[id])cart[id]={name:c.dataset.name,price:parseFloat(c.dataset.price),qty:0};
+      cart[id].qty++;render();openDrawer();
+    });
+  });
+  $("#lines").addEventListener("click",function(e){
+    var b=e.target.closest("button");if(!b)return;
+    var k=b.dataset.k;
+    if(b.dataset.a==="+")cart[k].qty++;else{cart[k].qty--;if(cart[k].qty<=0)delete cart[k]}
+    render();
+  });
+
+  /* ouverture / fermeture */
+  function show(el){$("#veil").classList.add("on");el.classList.add("on")}
+  function hideAll(){["#veil","#drawer","#modal"].forEach(function(s){$(s).classList.remove("on")})}
+  function openDrawer(){hideAll();show($("#drawer"))}
+  $("#openCart").addEventListener("click",openDrawer);
+  $("#closeCart").addEventListener("click",hideAll);
+  $("#closeModal").addEventListener("click",hideAll);
+  $("#veil").addEventListener("click",hideAll);
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")hideAll()});
+
+  /* paiement */
+  $("#checkout").addEventListener("click",function(){
+    if(!Object.keys(cart).length)return;
+    var names=Object.keys(cart).map(function(k){return cart[k].qty+"× "+cart[k].name}).join(", ");
+    $("#mItems").textContent=names;
+    $("#mTotal").textContent=eur(total());
+    $("#msg").className="msg";
+    hideAll();show($("#modal"));
+  });
+  document.querySelectorAll(".opt").forEach(function(o){
+    o.addEventListener("click",function(){
+      method=o.dataset.m;
+      document.querySelectorAll(".opt").forEach(function(x){x.setAttribute("aria-checked",x===o)});
+      $("#pay").textContent=method==="ltc"?"Payer en LTC":"Payer avec PayPal";
+      $("#msg").className="msg";
+    });
+  });
+  function say(t,err){var m=$("#msg");m.innerHTML=t;m.className="msg on"+(err?" err":"")}
+  $("#pay").addEventListener("click",function(){
+    var mail=$("#email").value.trim(),t=total();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)){say("Entre une adresse e-mail valide pour recevoir ta commande.",true);return}
+    if(method==="paypal"){
+      if(CONFIG.paypalUser.indexOf("TON_")===0){say("PayPal n’est pas encore configuré : renseigne ton pseudo PayPal.me dans CONFIG.",true);return}
+      window.open("https://www.paypal.me/"+encodeURIComponent(CONFIG.paypalUser)+"/"+t.toFixed(2)+"EUR","_blank","noopener");
+      say("PayPal s’est ouvert dans un nouvel onglet. Une fois le paiement fait, contacte-nous sur Discord avec l’e-mail <b></b>.");
+      $("#msg b").textContent=mail;
+    }else{
+      if(CONFIG.ltcAddress.indexOf("TON_")===0){say("Litecoin n’est pas encore configuré : renseigne ton adresse LTC dans CONFIG.",true);return}
+      say("Envoie l’équivalent de <b>"+eur(t)+"</b> en LTC à :<br><span class=\"addr\"></span><br>Puis contacte-nous sur Discord avec l’e-mail <b class=\"em\"></b>.");
+      $("#msg .addr").textContent=CONFIG.ltcAddress;$("#msg .em").textContent=mail;
+    }
+  });
+  render();
+})();
+</script>
+</body>
+</html>
