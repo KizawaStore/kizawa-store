@@ -129,6 +129,19 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);t
 .buy-btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
 
 @media(max-width:680px){.product-grid{grid-template-columns:minmax(0,1fr);max-width:420px;gap:18px}.product-card{min-height:500px}.thumb{height:165px;min-height:165px}}
+
+/* Espace client : historique des commandes */
+#mes-commandes{margin:34px auto;padding:24px;border:1px solid var(--line);background:var(--surface);border-radius:22px;scroll-margin-top:110px}
+.orders-head{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.orders-list{display:grid;gap:12px;margin-top:18px}
+.order-card{border:1px solid var(--line);background:var(--surface2);border-radius:16px;padding:16px;display:grid;gap:9px;min-width:0}
+.order-top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.order-id{font-weight:800;overflow-wrap:anywhere}
+.order-status{display:inline-flex;align-items:center;gap:7px;border-radius:99px;padding:6px 11px;font-size:.86rem;font-weight:700;background:rgba(255,191,0,.12);border:1px solid rgba(255,191,0,.35);color:#ffcf55}
+.order-status.paid{background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.35);color:#50e3b4}
+.orders-empty{padding:22px;border:1px dashed var(--line);border-radius:16px;color:var(--muted);text-align:center;margin-top:18px}
+.order-meta{color:var(--muted);font-size:.92rem;overflow-wrap:anywhere}
+.order-resume{justify-self:start;margin-top:4px;padding:9px 16px;font-size:.9rem}
 </style>
 </head>
 <body>
@@ -136,7 +149,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);t
 <nav>
 <a class="logo" href="#top">Kizawa</a>
 <div class="links"><a href="#produits">Produits</a><a href="#avantages">Avantages</a><a href="#fonctionnement">Fonctionnement</a></div>
-<div class="navr"><button class="btn ghost" id="openCart">Panier <span class="count" id="count">0</span></button><a class="btn" href="#produits">Boutique</a></div>
+<div class="navr"><a class="btn ghost" href="#mes-commandes">Mes commandes</a><button class="btn ghost" id="openCart">Panier <span class="count" id="count">0</span></button><a class="btn" href="#produits">Boutique</a></div>
 </nav>
 <div class="banner" id="banner"></div>
 <main class="wrap" id="top">
@@ -187,6 +200,11 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);t
 </section>
 <section id="fonctionnement"><h2>Comment ça marche</h2><p class="sub">Trois étapes pour passer commande.</p>
 <div class="cols"><div class="box"><span class="step">1</span><h3>Choisis</h3><p>Ajoute au panier les produits qui correspondent à ton serveur ou ton profil.</p></div><div class="box"><span class="step">2</span><h3>Paie</h3><p>Indique ton e-mail et règle en Litecoin ou avec PayPal.</p></div><div class="box"><span class="step">3</span><h3>Reçois</h3><p>Envoie ton numéro de commande au support Discord pour recevoir ton produit.</p></div></div>
+</section>
+<section id="mes-commandes">
+  <div class="orders-head"><div><h2>Mes commandes</h2><p class="sub">Retrouve tes commandes et leur statut avec leur Invoice ID.</p></div><button class="btn ghost" type="button" id="refreshOrders">Actualiser</button></div>
+  <div id="ordersList" class="orders-list"></div>
+  <p class="note">Historique enregistré sur cet appareil et ce navigateur. Le paiement reste « En attente » jusqu’à sa vérification par Kizawa.</p>
 </section>
 </main>
 <footer id="support"><div class="wrap">© Kizawa · <a class="support-link" href="https://discord.gg/kizawastore" target="_blank" rel="noopener">Rejoindre le support Discord ↗</a></div></footer>
@@ -330,7 +348,8 @@ function notifyDiscord(o){
       payment:o.method,
       amount:eur(o.total),
       orderId:o.id,
-      status:"En attente de confirmation"
+      email:o.mail,
+      createdAt:new Date().toISOString()
     })
   }).then(function(r){if(!r.ok)console.warn("Notification Discord non envoyée",r.status)})
     .catch(function(err){console.warn("Notification Discord impossible",err)});
@@ -338,6 +357,53 @@ function notifyDiscord(o){
 
 /* OUTILS PAIEMENT */
 function newOrderId(){return "K-"+Date.now().toString(36).toUpperCase().slice(-5)+Math.floor(Math.random()*1296).toString(36).toUpperCase().padStart(2,"0")}
+
+/* Historique local des commandes du client */
+var ORDERS_KEY="kizawa_customer_orders_v1";
+function readOrders(){
+  try{var data=JSON.parse(localStorage.getItem(ORDERS_KEY)||"[]");return Array.isArray(data)?data:[]}
+  catch(e){return []}
+}
+function saveCustomerOrder(o){
+  var list=readOrders();
+  list.unshift({id:o.id,items:o.items,total:o.total,mail:o.mail,method:o.method,createdAt:new Date().toISOString(),status:"PENDING"});
+  try{localStorage.setItem(ORDERS_KEY,JSON.stringify(list.slice(0,100)))}catch(e){console.warn("Historique local indisponible",e)}
+  renderCustomerOrders();
+}
+function renderCustomerOrders(){
+  var host=$("#ordersList");if(!host)return;
+  var list=readOrders();host.innerHTML="";
+  if(!list.length){var empty=document.createElement("div");empty.className="orders-empty";empty.textContent="Tu n’as pas encore de commande sur cet appareil.";host.appendChild(empty);return}
+  list.forEach(function(o){
+    var card=document.createElement("article");card.className="order-card";
+    var top=document.createElement("div");top.className="order-top";
+    var id=document.createElement("div");id.className="order-id";id.textContent="🧾 Invoice ID : "+o.id;
+    var status=document.createElement("span");status.className="order-status"+(o.status==="COMPLETED"?" paid":"");status.textContent=o.status==="COMPLETED"?"✓ Payé / validé":"◷ En attente de paiement";
+    top.appendChild(id);top.appendChild(status);card.appendChild(top);
+    var product=document.createElement("div");product.textContent="🛍️ "+(o.items||"Produit non précisé");card.appendChild(product);
+    var meta=document.createElement("div");meta.className="order-meta";
+    var date=o.createdAt?new Date(o.createdAt).toLocaleString("fr-FR"):"Date inconnue";
+    meta.textContent="Montant : "+eur(Number(o.total)||0)+" · Paiement : "+(o.method||"—")+" · "+date;
+    card.appendChild(meta);
+    if(o.status!=="COMPLETED"){
+      var resume=document.createElement("button");resume.type="button";resume.className="btn order-resume";resume.textContent="Reprendre le paiement";resume.setAttribute("data-resume-order",o.id);card.appendChild(resume);
+    }
+    host.appendChild(card);
+  });
+}
+$("#ordersList").addEventListener("click",function(e){
+  var button=e.target.closest("[data-resume-order]");if(!button)return;
+  var saved=readOrders().find(function(item){return item.id===button.getAttribute("data-resume-order")});
+  if(!saved||saved.status==="COMPLETED")return;
+  resumeCustomerPayment(saved);
+});
+function resumeCustomerPayment(saved){
+  order={id:saved.id,items:saved.items,total:Number(saved.total)||0,mail:saved.mail||"",method:saved.method||"PayPal"};
+  hideAll();show($("#modal"));
+  if(order.method.toLowerCase().indexOf("litecoin")!==-1||order.method.toLowerCase()==="ltc")showLtc(order.mail,order.total);
+  else showPaypal(order.mail,order.total);
+}
+$("#refreshOrders").addEventListener("click",renderCustomerOrders);
 function copy(text,btn){
   var done=function(){var o=btn.textContent;btn.textContent="Copié !";setTimeout(function(){btn.textContent=o},1600)};
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,function(){btn.textContent="Copie impossible"})}
@@ -432,14 +498,15 @@ $("#pay").addEventListener("click",function(){
   var items=Object.keys(cart).map(function(k){return cart[k].qty+"× "+cart[k].name}).join(", ");
   if(method==="ltc"){
     if(!String(CONFIG.ltcAddress||"").trim()){say("L’adresse Litecoin n’est pas configurée.",true);return;}
-    order={id:newOrderId(),items:items,total:amount,mail:mail,method:"Litecoin"};notifyDiscord(order);showLtc(mail,amount);
+    order={id:newOrderId(),items:items,total:amount,mail:mail,method:"Litecoin"};saveCustomerOrder(order);notifyDiscord(order);showLtc(mail,amount);
   }else{
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(CONFIG.paypalEmail||"").trim())){say("L’adresse PayPal n’est pas configurée correctement.",true);return;}
-    order={id:newOrderId(),items:items,total:amount,mail:mail,method:"PayPal"};notifyDiscord(order);showPaypal(mail,amount);
+    order={id:newOrderId(),items:items,total:amount,mail:mail,method:"PayPal"};saveCustomerOrder(order);notifyDiscord(order);showPaypal(mail,amount);
   }
 });
 
 render();
+renderCustomerOrders();
 })();
 </script>
 </body>
