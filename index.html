@@ -320,9 +320,20 @@ document.querySelectorAll(".opt").forEach(function(o){
 });
 function say(message,error){var m=$("#msg");m.textContent=message;m.className="msg on"+(error?" err":"")}
 
-/* NOTIFICATION DISCORD : webhook conservé côté serveur sur Vercel */
+/* NOTIFICATION DISCORD : commande en attente, jamais déclarée payée sans vérification */
 function notifyDiscord(o){
-  fetch("/api/notify-payment",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({id:o.id,items:o.items,total:o.total,method:o.method})}).catch(function(){/* La commande continue même si la notification échoue. */});
+  fetch("/api/notify-payment",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      product:o.items,
+      payment:o.method,
+      amount:eur(o.total),
+      orderId:o.id,
+      status:"En attente de confirmation"
+    })
+  }).then(function(r){if(!r.ok)console.warn("Notification Discord non envoyée",r.status)})
+    .catch(function(err){console.warn("Notification Discord impossible",err)});
 }
 
 /* OUTILS PAIEMENT */
