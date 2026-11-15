@@ -489,24 +489,44 @@ function showLtc(mail,amount){
     var verify=document.createElement("button");verify.type="button";verify.className="btn";verify.textContent="Vérifier mon paiement";box.appendChild(verify);
     var result=document.createElement("p");result.className="msg";result.setAttribute("aria-live","polite");box.appendChild(result);
     verify.addEventListener("click",function(){
-      var txid=txInput.value.trim();
-      if(!/^[a-fA-F0-9]{64}$/.test(txid)){result.textContent="Entre un TXID Litecoin valide de 64 caractères hexadécimaux.";result.className="msg on err";return;}
-      if(!order.ltc){result.textContent="Le montant LTC de cette commande est indisponible. Reprends la commande.";result.className="msg on err";return;}
-      verify.disabled=true;verify.textContent="Vérification…";result.textContent="Vérification de la transaction sur la blockchain Litecoin…";result.className="msg on";
+      /* Nettoyage léger : retire uniquement les espaces copiés avec le TXID. */
+      var txid=txInput.value.replace(/\\s+/g,"").trim();
+      txInput.value=txid;
+      if(!/^[a-fA-F0-9]{64}$/.test(txid)){
+        result.textContent="Le TXID doit contenir exactement 64 caractères (0–9 et a–f). Vérifie que tu as copié le hash complet.";
+        result.className="msg on err";return;
+      }
+      if(!order.ltc){
+        result.textContent="Le montant LTC de cette commande est introuvable. Recommence la commande pour recalculer le montant.";
+        result.className="msg on err";return;
+      }
+      verify.disabled=true;verify.textContent="Vérification…";
+      result.textContent="Vérification du TXID sur la blockchain Litecoin…";result.className="msg on";
       fetch("/api/verify-ltc-payment",{
-        method:"POST",headers:{"Content-Type":"application/json"},
+        method:"POST",
+        headers:{"Content-Type":"application/json","Accept":"application/json"},
         body:JSON.stringify({txid:txid,orderId:order.id,email:order.mail,product:order.items,amountEUR:order.total,expectedLtc:order.ltc})
-      }).then(function(r){return r.json().then(function(data){return {ok:r.ok,data:data}})})
-      .then(function(reply){
+      }).then(function(r){
+        return r.text().then(function(raw){
+          var data;
+          try{data=raw?JSON.parse(raw):{};}catch(_){data={error:"Le serveur a renvoyé une réponse invalide (HTTP "+r.status+")."};}
+          return {ok:r.ok,status:r.status,data:data};
+        });
+      }).then(function(reply){
         if(!reply.ok||!reply.data||!reply.data.success){
-          throw new Error(reply.data&&reply.data.error?reply.data.error:"Paiement non confirmé. Vérifie le TXID et réessaie.");
+          var detail=reply.data&&reply.data.error?reply.data.error:"Réponse du serveur inattendue.";
+          throw new Error(detail+" (HTTP "+reply.status+")");
         }
         updateCustomerOrder(order.id,{status:"COMPLETED",txid:txid,confirmedAt:new Date().toISOString()});
         result.textContent="✓ Paiement confirmé ! Ta commande est maintenant Completed.";
         result.className="msg on";
         verify.textContent="Paiement confirmé";verify.disabled=true;txInput.disabled=true;
       }).catch(function(err){
-        result.textContent=err.message||"Impossible de vérifier la transaction pour le moment.";
+        var message=err&&err.message?err.message:"Erreur inconnue.";
+        if(/failed to fetch|networkerror|load failed|pattern did not match/i.test(message)){
+          message="Impossible de contacter le serveur de vérification. Vérifie que /api/verify-ltc-payment est bien déployé sur le même site que la boutique.";
+        }
+        result.textContent="Vérification impossible : "+message;
         result.className="msg on err";verify.disabled=false;verify.textContent="Réessayer la vérification";
       });
     });
