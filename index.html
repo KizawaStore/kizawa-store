@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -30,7 +29,8 @@ nav{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);z-index:5;marg
 .btn:focus-visible,.tab:focus-visible,input:focus-visible,.opt:focus-visible,.x:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 nav .btn{padding:10px 20px}
 .count{background:var(--red);color:#fff;border-radius:99px;min-width:22px;height:22px;display:inline-grid;place-items:center;font-size:.8rem;padding:0 6px}
-.hero{text-align:center;padding:96px 0 40px}
+.banner{display:none;margin:14px auto 0;max-width:820px;text-align:center;background:#ffbf00;color:#1d1400;font-weight:600;border-radius:99px;padding:10px 20px}.banner.on{display:block}
+.hero{text-align:center;padding:80px 0 40px}
 .pill{display:inline-flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:7px 18px;font-size:.92rem}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--green)}
 .hero h1{font-size:clamp(2.4rem,7vw,5rem);line-height:1.02;letter-spacing:-.045em;font-weight:800;margin:30px auto 20px;max-width:15ch}
@@ -38,6 +38,9 @@ nav .btn{padding:10px 20px}
 .cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
 .checks{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;margin-top:34px;color:var(--muted)}
 .checks b{color:var(--ink);font-weight:600}.checks span::before{content:"✓";color:var(--green);margin-right:8px;font-weight:800}
+.accepted{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:26px;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:6px 14px;color:var(--ink);font-size:.92rem}
+.chip i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;font-size:.75rem;color:#fff}
 section{padding:56px 0}
 h2{font-size:clamp(1.8rem,4vw,2.6rem);letter-spacing:-.03em;margin:0 0 8px;text-align:center}
 .sub{color:var(--muted);text-align:center;margin:0 auto 30px;max-width:48ch}
@@ -77,7 +80,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);t
 .modal{position:fixed;z-index:22;left:50%;top:50%;transform:translate(-50%,-50%);width:min(540px,calc(100% - 24px));max-height:calc(100% - 24px);overflow-y:auto;background:var(--surface);border:1px solid var(--line);border-radius:26px;display:none}
 .modal.on{display:block}
 .mhead{padding:22px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
-.mhead small{color:var(--muted);display:block}.mhead b{font-size:1.3rem}
+.mhead small{color:var(--muted);display:block;text-transform:uppercase;letter-spacing:.06em;font-size:.78rem}.mhead b{font-size:1.3rem}
 .mbody{padding:22px 24px 24px;display:flex;flex-direction:column;gap:14px}
 .mbody h4{margin:6px 0 0;font-size:1.05rem}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -87,8 +90,17 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);t
 .note{color:var(--muted);font-size:.9rem;margin:0}
 .msg{margin:0;padding:12px 14px;border-radius:14px;background:var(--surface2);border:1px solid var(--line);font-size:.95rem;display:none;word-break:break-word}
 .msg.on{display:block}.msg.err{border-color:var(--red);color:var(--red)}
-.addr{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;overflow-wrap:anywhere}
-@media(max-width:760px){.links{display:none}nav{justify-content:space-between}.hero{padding-top:64px}.opts{grid-template-columns:1fr}}
+.pview{display:none;flex-direction:column;gap:14px}.pview.on{display:flex}
+.qr{align-self:center;background:#fff;border-radius:18px;padding:12px;width:220px;height:220px;display:grid;place-items:center}
+.qr svg{width:100%;height:100%;display:block}
+.field{border:1px solid var(--line);background:var(--surface2);border-radius:16px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.field small{display:block;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-size:.72rem}
+.field code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.95rem;overflow-wrap:anywhere}
+.field .btn{padding:7px 14px;font-size:.85rem;flex:none}
+.alert{border:1px solid var(--line);background:var(--surface2);border-radius:16px;padding:12px 14px;font-size:.9rem;color:var(--muted)}.alert b{color:var(--ink)}
+.alert.warn{border-color:#ffbf00}
+.center{text-align:center}
+@media(max-width:760px){.links{display:none}nav{justify-content:space-between}.hero{padding-top:56px}.opts{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -98,13 +110,15 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);t
 <div class="links"><a href="#produits">Produits</a><a href="#avantages">Avantages</a><a href="#fonctionnement">Fonctionnement</a></div>
 <div class="navr"><button class="btn ghost" id="openCart">Panier <span class="count" id="count">0</span></button><a class="btn" href="#produits">Boutique</a></div>
 </nav>
+<div class="banner" id="banner"></div>
 <main class="wrap" id="top">
 <header class="hero">
-<span class="pill"><i class="dot"></i> Édition de Noël</span>
+<span class="pill"><i class="dot"></i> Édition de Noël · LTC &amp; PayPal</span>
 <h1>Tes produits Discord, simplement</h1>
 <p>Nitro, boosts de serveur et décorations Discord. Paiement en Litecoin ou PayPal.</p>
 <div class="cta"><a class="btn" href="#produits">Voir les produits</a><a class="btn ghost" href="#support" id="discordTop">Support Discord</a></div>
 <div class="checks"><span><b>Prix</b> clairs</span><span><b>Support</b> Discord</span><span><b>Commande</b> simple</span></div>
+<div class="accepted">Paiements acceptés <span class="chip"><i style="background:#345d9d">Ł</i>Litecoin</span><span class="chip"><i style="background:#0070ba">P</i>PayPal</span></div>
 </header>
 <section id="produits">
 <h2>Nos produits</h2><p class="sub">Ajoute tes offres au panier puis paie en Litecoin ou PayPal.</p>
@@ -138,7 +152,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);t
 <div class="cols"><div class="box"><h3>Prix clairs</h3><p>Chaque offre affiche son prix et sa durée, sans frais cachés.</p></div><div class="box"><h3>Deux moyens de paiement</h3><p>Paie en Litecoin ou avec PayPal, au choix.</p></div><div class="box"><h3>Aide sur Discord</h3><p>Une question avant ou après ta commande ? Écris-nous sur Discord.</p></div></div>
 </section>
 <section id="fonctionnement"><h2>Comment ça marche</h2><p class="sub">Trois étapes pour passer commande.</p>
-<div class="cols"><div class="box"><span class="step">1</span><h3>Choisis</h3><p>Ajoute au panier les produits qui correspondent à ton serveur ou ton profil.</p></div><div class="box"><span class="step">2</span><h3>Paie</h3><p>Indique ton e-mail et règle en Litecoin ou avec PayPal.</p></div><div class="box"><span class="step">3</span><h3>Reçois</h3><p>Récupère ton produit et contacte le support en cas de besoin.</p></div></div>
+<div class="cols"><div class="box"><span class="step">1</span><h3>Choisis</h3><p>Ajoute au panier les produits qui correspondent à ton serveur ou ton profil.</p></div><div class="box"><span class="step">2</span><h3>Paie</h3><p>Indique ton e-mail et règle en Litecoin ou avec PayPal.</p></div><div class="box"><span class="step">3</span><h3>Reçois</h3><p>Envoie ton numéro de commande au support Discord pour recevoir ton produit.</p></div></div>
 </section>
 </main>
 <footer id="support"><div class="wrap">© Kizawa · Support via notre serveur Discord</div></footer>
@@ -148,35 +162,42 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);t
 <div class="lines" id="lines"></div><div class="total"><span>Total</span><span id="cartTotal">0,00 €</span></div><button class="btn" id="checkout">Commander</button>
 </aside>
 <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Paiement">
-<div class="mhead"><div><small>Ta commande</small><b id="mItems">—</b></div><div style="display:flex;align-items:center;gap:12px"><b id="mTotal">0,00 €</b><button class="x" id="closeModal" aria-label="Fermer">✕</button></div></div>
-<div class="mbody">
+<div class="mhead"><div><small id="mLabel">Ta commande</small><b id="mItems">—</b></div><div style="display:flex;align-items:center;gap:12px"><b id="mTotal">0,00 €</b><button class="x" id="closeModal" aria-label="Fermer">✕</button></div></div>
+<div class="mbody" id="step1">
 <h4>Choisis ton moyen de paiement</h4>
-<div class="opts" role="radiogroup" aria-label="Moyen de paiement"><button class="opt" role="radio" aria-checked="true" data-m="ltc"><b>Litecoin</b><small>Adresse LTC</small></button><button class="opt" role="radio" aria-checked="false" data-m="paypal"><b>PayPal</b><small>Paiement par compte ou carte</small></button></div>
+<div class="opts" role="radiogroup" aria-label="Moyen de paiement"><button class="opt" role="radio" aria-checked="true" data-m="ltc"><b>Litecoin</b><small>QR code + montant exact</small></button><button class="opt" role="radio" aria-checked="false" data-m="paypal"><b>PayPal</b><small>Compte ou carte</small></button></div>
 <h4>Ton e-mail</h4><input class="mail" id="email" type="email" placeholder="toi@exemple.com" autocomplete="email">
 <p class="note">Obligatoire : indique ton e-mail pour identifier ta commande. Vérifie qu’il est correct.</p>
-<button class="btn" id="pay">Afficher le paiement LTC</button><p class="msg" id="msg" aria-live="polite"></p>
+<button class="btn" id="pay">Continuer vers le paiement LTC</button><p class="msg" id="msg" aria-live="polite"></p>
 </div>
+<div class="mbody pview" id="step2"></div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 (function(){
 "use strict";
 
-/* CONFIGURATION : les valeurs sont nettoyées avant utilisation */
+/* CONFIGURATION */
 var CONFIG = Object.freeze({
-  paypalEmail: "louizabouzidi66@gmail.com".trim(),
-  ltcAddress: "LSAE4UdG7kJbu7tJVR9J87eNrfemPr36jy".trim(),
-  discord: "#"
+  paypalEmail: "louizabouzidi66@gmail.com",
+  paypalMe: "",            /* ex. "tonpseudo" pour un lien paypal.me/tonpseudo/montant */
+  ltcAddress: "LSAE4UdG7kJbu7tJVR9J87eNrfemPr36jy",
+  ltcEurFallback: 0,       /* cours LTC/EUR de secours si l'API est inaccessible (0 = désactivé) */
+  discord: "#",
+  banner: ""               /* message d'annonce en haut du site, vide = masqué */
 });
 
 var $=function(s){return document.querySelector(s)};
-var cart={},method="ltc";
+var cart={},method="ltc",order=null;
 var eur=function(n){return n.toFixed(2).replace(".",",")+" €"};
+var esc=function(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})};
+
+if(CONFIG.banner){$("#banner").textContent=CONFIG.banner;$("#banner").classList.add("on")}
 
 /* FILTRES */
 var cards=[].slice.call(document.querySelectorAll(".product-card"));
 var tabs=[].slice.call(document.querySelectorAll(".tab"));
 var q=$("#q"),empty=$("#empty"),f="all";
-
 function filter(){
   var t=q.value.trim().toLowerCase(),n=0;
   cards.forEach(function(c){
@@ -193,31 +214,25 @@ tabs.forEach(function(b){
   });
 });
 q.addEventListener("input",filter);
-
 $("#discordTop").addEventListener("click",function(e){
   if(CONFIG.discord!=="#"){e.preventDefault();window.open(CONFIG.discord,"_blank","noopener");}
 });
 
 /* PANIER */
-function total(){
-  return Object.keys(cart).reduce(function(s,k){return s+cart[k].price*cart[k].qty},0);
-}
+function total(){return Object.keys(cart).reduce(function(s,k){return s+cart[k].price*cart[k].qty},0)}
 function render(){
   var ids=Object.keys(cart),n=0,html="";
   ids.forEach(function(k){
     var i=cart[k];n+=i.qty;
-    html+='<div class="line"><div><b>'+i.name+'</b><small>'+eur(i.price)+'</small></div><div class="qty"><button data-a="-" data-k="'+k+'" aria-label="Retirer un">−</button><span>'+i.qty+'</span><button data-a="+" data-k="'+k+'" aria-label="Ajouter un">+</button></div></div>';
+    html+='<div class="line"><div><b>'+esc(i.name)+'</b><small>'+eur(i.price)+'</small></div><div class="qty"><button data-a="-" data-k="'+esc(k)+'" aria-label="Retirer un">−</button><span>'+i.qty+'</span><button data-a="+" data-k="'+esc(k)+'" aria-label="Ajouter un">+</button></div></div>';
   });
   $("#lines").innerHTML=html||'<p class="muted">Ton panier est vide. Ajoute un produit pour commencer.</p>';
   $("#count").textContent=n;$("#cartTotal").textContent=eur(total());
   $("#checkout").disabled=!ids.length;
 }
-function hideAll(){
-  ["#veil","#drawer","#modal"].forEach(function(s){$(s).classList.remove("on")});
-}
+function hideAll(){["#veil","#drawer","#modal"].forEach(function(s){$(s).classList.remove("on")})}
 function show(el){$("#veil").classList.add("on");el.classList.add("on")}
 function openDrawer(){hideAll();show($("#drawer"))}
-
 document.querySelectorAll(".add").forEach(function(b){
   b.addEventListener("click",function(){
     var c=b.closest(".product-card"),id=c.dataset.id;
@@ -228,83 +243,134 @@ document.querySelectorAll(".add").forEach(function(b){
 $("#lines").addEventListener("click",function(e){
   var b=e.target.closest("button");if(!b)return;
   var k=b.dataset.k;if(!cart[k])return;
-  if(b.dataset.a==="+")cart[k].qty++;
-  else{cart[k].qty--;if(cart[k].qty<=0)delete cart[k]}
+  if(b.dataset.a==="+")cart[k].qty++;else{cart[k].qty--;if(cart[k].qty<=0)delete cart[k]}
   render();
 });
-
 $("#openCart").addEventListener("click",openDrawer);
 $("#closeCart").addEventListener("click",hideAll);
 $("#closeModal").addEventListener("click",hideAll);
 $("#veil").addEventListener("click",hideAll);
 document.addEventListener("keydown",function(e){if(e.key==="Escape")hideAll()});
 
-/* OUVRIR LE FORMULAIRE */
+/* FORMULAIRE */
+function backToForm(){$("#step2").classList.remove("on");$("#step1").style.display="";$("#mLabel").textContent="Ta commande"}
 $("#checkout").addEventListener("click",function(){
   if(!Object.keys(cart).length)return;
   $("#mItems").textContent=Object.keys(cart).map(function(k){return cart[k].qty+"× "+cart[k].name}).join(", ");
   $("#mTotal").textContent=eur(total());
   $("#msg").className="msg";$("#msg").textContent="";
-  hideAll();show($("#modal"));
+  backToForm();hideAll();show($("#modal"));
 });
-
-/* CHOIX DU PAIEMENT */
 document.querySelectorAll(".opt").forEach(function(o){
   o.addEventListener("click",function(){
     method=o.dataset.m;
     document.querySelectorAll(".opt").forEach(function(x){x.setAttribute("aria-checked",x===o?"true":"false")});
-    $("#pay").textContent=method==="ltc"?"Afficher le paiement LTC":"Afficher le paiement PayPal";
+    $("#pay").textContent=method==="ltc"?"Continuer vers le paiement LTC":"Continuer vers le paiement PayPal";
     $("#msg").className="msg";$("#msg").textContent="";
   });
 });
+function say(message,error){var m=$("#msg");m.textContent=message;m.className="msg on"+(error?" err":"")}
 
-function say(message,error){
-  var m=$("#msg");m.textContent=message;m.className="msg on"+(error?" err":"");
+/* OUTILS PAIEMENT */
+function newOrderId(){return "K-"+Date.now().toString(36).toUpperCase().slice(-5)+Math.floor(Math.random()*1296).toString(36).toUpperCase().padStart(2,"0")}
+function copy(text,btn){
+  var done=function(){var o=btn.textContent;btn.textContent="Copié !";setTimeout(function(){btn.textContent=o},1600)};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,function(){btn.textContent="Copie impossible"})}
+  else btn.textContent="Copie impossible";
 }
-function addCopyButton(text,label){
-  var m=$("#msg"),b=document.createElement("button");
-  b.type="button";b.className="btn ghost";b.textContent=label;
-  b.addEventListener("click",function(){
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(function(){b.textContent="Copié !"}).catch(function(){say("La copie automatique a échoué. Sélectionne et copie l'adresse affichée.",true)});
-    }else{say("La copie automatique n'est pas disponible. Sélectionne et copie l'adresse affichée.")}
+function field(label,value,box){
+  var d=document.createElement("div");d.className="field";
+  var l=document.createElement("div");
+  var s=document.createElement("small");s.textContent=label;
+  var c=document.createElement("code");c.textContent=value;
+  l.appendChild(s);l.appendChild(c);
+  var b=document.createElement("button");b.type="button";b.className="btn ghost";b.textContent="Copier";
+  b.addEventListener("click",function(){copy(value,b)});
+  d.appendChild(l);d.appendChild(b);box.appendChild(d);
+}
+function alertBox(html,warn,box){var a=document.createElement("div");a.className="alert"+(warn?" warn":"");a.innerHTML=html;box.appendChild(a)}
+function linkBtn(text,href,ghost,box){
+  var a=document.createElement("a");a.className="btn"+(ghost?" ghost":"");a.textContent=text;a.href=href;a.target="_blank";a.rel="noopener noreferrer";box.appendChild(a);
+}
+function recap(o){
+  return "Commande "+o.id+"\nProduits : "+o.items+"\nTotal : "+eur(o.total)+"\nPaiement : "+o.method+(o.ltc?" ("+o.ltc+" LTC)":"")+"\nE-mail : "+o.mail;
+}
+function finish(box){
+  var b=document.createElement("button");b.type="button";b.className="btn ghost";b.textContent="Copier le récapitulatif de commande";
+  b.addEventListener("click",function(){copy(recap(order),b)});box.appendChild(b);
+  if(CONFIG.discord!=="#")linkBtn("Envoyer ma preuve sur Discord",CONFIG.discord,false,box);
+  var back=document.createElement("button");back.type="button";back.className="btn ghost";back.textContent="← Modifier ma commande";back.addEventListener("click",backToForm);box.appendChild(back);
+}
+function getRate(){
+  var req=fetch("https://api.coingecko.com/api/v3/simple/price?ids=litecoin&vs_currencies=eur").then(function(r){return r.json()}).then(function(j){return j.litecoin.eur});
+  var to=new Promise(function(_,rej){setTimeout(rej,5000)});
+  return Promise.race([req,to]).catch(function(){return CONFIG.ltcEurFallback||0});
+}
+function qrSvg(text){
+  try{var qr=qrcode(0,"M");qr.addData(text);qr.make();return qr.createSvgTag({cellSize:4,margin:0,scalable:true})}catch(e){return ""}
+}
+function openStep2(label){
+  $("#step1").style.display="none";
+  var s=$("#step2");s.innerHTML="";s.classList.add("on");$("#mLabel").textContent=label;return s;
+}
+
+/* PAIEMENT LTC */
+function showLtc(mail,amount){
+  var box=openStep2("Paiement Litecoin · "+order.id);
+  var load=document.createElement("p");load.className="muted center";load.textContent="Calcul du montant en LTC…";box.appendChild(load);
+  getRate().then(function(rate){
+    box.innerHTML="";
+    var address=CONFIG.ltcAddress,uri="litecoin:"+address,amtLtc="";
+    if(rate>0){
+      /* Petit décalage aléatoire (quelques litoshis) pour distinguer chaque commande */
+      var lit=Math.round(amount/rate*1e8)+10+Math.floor(Math.random()*90);
+      amtLtc=(lit/1e8).toFixed(8);uri+="?amount="+amtLtc;order.ltc=amtLtc;
+    }
+    var svg=qrSvg(uri);
+    if(svg){var q=document.createElement("div");q.className="qr";q.innerHTML=svg;q.setAttribute("role","img");q.setAttribute("aria-label","QR code de paiement Litecoin");box.appendChild(q)}
+    var hint=document.createElement("p");hint.className="note center";hint.textContent="Scanne avec ton application Litecoin, ou copie les infos ci-dessous.";box.appendChild(hint);
+    linkBtn("Ouvrir dans mon portefeuille",uri,false,box);
+    if(amtLtc){
+      field("Montant exact (LTC)",amtLtc,box);
+      alertBox("<b>Envoie exactement ce montant</b> : il sert à reconnaître ton paiement. Depuis un échange, ajoute les frais de retrait en plus pour que le montant reçu soit exact. Cours utilisé : 1 LTC ≈ "+esc(rate.toFixed(2).replace(".",","))+" €.",false,box);
+    }else{
+      alertBox("<b>Cours LTC indisponible.</b> Total à payer : "+esc(eur(amount))+". Convertis ce montant en LTC avec un convertisseur fiable, puis envoie-le à l’adresse ci-dessous.",true,box);
+    }
+    field("Adresse LTC",address,box);
+    field("Numéro de commande",order.id,box);
+    alertBox("Réseau <b>Litecoin (LTC)</b> uniquement : un envoi sur un autre réseau est perdu. Après le paiement, envoie ton numéro de commande et le hash de transaction au support Discord. Cette page ne vérifie pas automatiquement la réception.",false,box);
+    finish(box);
   });
-  m.appendChild(document.createElement("br"));m.appendChild(b);
 }
 
-/* AFFICHER LES INSTRUCTIONS DE PAIEMENT */
+/* PAIEMENT PAYPAL */
+function showPaypal(mail,amount){
+  var box=openStep2("Paiement PayPal · "+order.id);
+  var amt=amount.toFixed(2);
+  var top=document.createElement("div");top.className="center";
+  top.innerHTML='<div style="font-size:2.4rem;font-weight:800;letter-spacing:-.04em">'+esc(eur(amount))+'</div><div class="muted">Montant exact à envoyer</div>';box.appendChild(top);
+  var me=String(CONFIG.paypalMe||"").trim().replace(/[^A-Za-z0-9._-]/g,"");
+  if(me)linkBtn("Payer avec PayPal",
+    "https://www.paypal.com/paypalme/"+encodeURIComponent(me)+"/"+amt+"EUR",false,box);
+  field("Compte PayPal du vendeur",CONFIG.paypalEmail,box);
+  field("Montant (EUR)",amt,box);
+  field("Note à indiquer dans le paiement",order.id,box);
+  alertBox("<b>Choisis « Biens et services »</b> (jamais « Proches »). Cela te protège en cas de problème. Mets le numéro de commande <b>"+esc(order.id)+"</b> dans la note.",true,box);
+  alertBox("Après le paiement, envoie ton numéro de commande et la capture de confirmation au support Discord. Cette page ne vérifie pas automatiquement la réception.",false,box);
+  finish(box);
+}
+
 $("#pay").addEventListener("click",function(){
   var mail=$("#email").value.trim(),amount=total();
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)){
-    say("Entre une adresse e-mail valide pour identifier ta commande.",true);return;
-  }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)){say("Entre une adresse e-mail valide pour identifier ta commande.",true);return;}
   if(amount<=0){say("Ton panier est vide.",true);return;}
-
+  var items=Object.keys(cart).map(function(k){return cart[k].qty+"× "+cart[k].name}).join(", ");
   if(method==="ltc"){
-    var address=String(CONFIG.ltcAddress||"").trim();
-    if(!address){
-      say("L'adresse Litecoin est vide dans la configuration du site.",true);return;
-    }
-    var m=$("#msg");m.textContent="";
-    var title=document.createElement("b");title.textContent="Montant de la commande : "+eur(amount);
-    var addressLabel=document.createElement("p");addressLabel.textContent="Adresse Litecoin à utiliser :";
-    var addressText=document.createElement("p");addressText.className="addr";addressText.textContent=address;
-    var emailText=document.createElement("p");emailText.textContent="E-mail de commande : "+mail;
-    var warning=document.createElement("p");warning.textContent="Le total affiché est en euros. Vérifie le montant exact en LTC auprès d'un convertisseur fiable avant d'envoyer. N'envoie pas de paiement si tu n'es pas sûr de l'adresse et du montant.";
-    m.appendChild(title);m.appendChild(addressLabel);m.appendChild(addressText);m.appendChild(emailText);m.appendChild(warning);
-    m.className="msg on";addCopyButton(address,"Copier l'adresse Litecoin");
+    if(!String(CONFIG.ltcAddress||"").trim()){say("L’adresse Litecoin n’est pas configurée.",true);return;}
+    order={id:newOrderId(),items:items,total:amount,mail:mail,method:"Litecoin"};showLtc(mail,amount);
   }else{
-    var paypal=String(CONFIG.paypalEmail||"").trim();
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(paypal)){
-      say("L'adresse PayPal n'est pas configurée correctement.",true);return;
-    }
-    var p=$("#msg");p.textContent="";
-    var totalLine=document.createElement("b");totalLine.textContent="Montant de la commande : "+eur(amount);
-    var emailLine=document.createElement("p");emailLine.textContent="Adresse PayPal du vendeur : "+paypal;
-    var buyerLine=document.createElement("p");buyerLine.textContent="Ton e-mail de commande : "+mail;
-    var warningLine=document.createElement("p");warningLine.textContent="Effectue uniquement un paiement commercial avec une protection adaptée. Cette page ne vérifie pas automatiquement la réception du paiement.";
-    p.appendChild(totalLine);p.appendChild(emailLine);p.appendChild(buyerLine);p.appendChild(warningLine);p.className="msg on";
-    addCopyButton(paypal,"Copier l'adresse PayPal");
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(CONFIG.paypalEmail||"").trim())){say("L’adresse PayPal n’est pas configurée correctement.",true);return;}
+    order={id:newOrderId(),items:items,total:amount,mail:mail,method:"PayPal"};showPaypal(mail,amount);
   }
 });
 
