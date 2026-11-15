@@ -165,7 +165,7 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);t
 <h2>Nos produits</h2><p class="sub">Ajoute tes offres au panier puis paie en Litecoin ou PayPal.</p>
 <input class="search" id="q" type="search" placeholder="Rechercher un produit…" aria-label="Rechercher un produit">
 <div class="tabs">
-<button class="tab" data-f="all" aria-pressed="true">Tout</button><button class="tab" data-f="Nitro" aria-pressed="false">Nitro</button><button class="tab" data-f="Boost" aria-pressed="false">Boost</button><button class="tab" data-f="Tech Make" aria-pressed="false">Tech Make</button><button class="tab" data-f="Suppliers" aria-pressed="false">Suppliers</button><button class="tab" data-f="All Tech" aria-pressed="false">All Tech</button>
+<button class="tab" data-f="all" aria-pressed="true">Tout</button><button class="tab" data-f="Nitro" aria-pressed="false">Nitro</button><button class="tab" data-f="Boost" aria-pressed="false">Boost</button><button class="tab" data-f="Tech Make" aria-pressed="false">Tech Make</button><button class="tab" data-f="Suppliers" aria-pressed="false">Suppliers</button><button class="tab" data-f="All Tech" aria-pressed="false">All Tech</button><button class="tab" data-f="Autre" aria-pressed="false">Autre</button>
 </div>
 <div class="product-grid" id="grid">
 <article class="product-card" data-cat="Nitro" data-id="nitro-boost" data-name="Nitro Boost" data-price="2.5">
@@ -191,6 +191,9 @@ footer{border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);t
 </article>
 <article class="product-card" data-cat="All Tech" data-id="all-tech" data-name="All Tech" data-price="15">
 <div class="thumb"><span class="status">Disponible</span><div class="icon">💎</div></div><div class="body"><span class="product-tag">All Tech</span><h3>All Tech</h3><p>Catégories incluses : Nitro, Déco, Boost, Robux, Gift Card et autres.</p><div class="product-price">15,00 €</div><button class="btn buy-btn add">Ajouter au panier</button></div>
+</article>
+<article class="product-card" data-cat="Autre" data-id="test-10-centimes" data-name="Test" data-price="0.10">
+<div class="thumb"><span class="status">Disponible</span><div class="icon">🧪</div></div><div class="body"><span class="product-tag">Autre</span><h3>Test</h3><p>Article de test.</p><div class="product-price">0,10 €</div><button class="btn buy-btn add">Ajouter au panier</button></div>
 </article>
 </div>
 <div class="empty" id="empty">Aucun produit ne correspond à ta recherche.</div>
@@ -348,7 +351,9 @@ function notifyDiscord(o){
       payment:o.method,
       amount:eur(o.total),
       orderId:o.id,
+      invoiceId:o.id,
       email:o.mail,
+      customerEmail:o.mail,
       createdAt:new Date().toISOString()
     })
   }).then(function(r){if(!r.ok)console.warn("Notification Discord non envoyée",r.status)})
