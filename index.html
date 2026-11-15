@@ -371,9 +371,18 @@ function readOrders(){
 }
 function saveCustomerOrder(o){
   var list=readOrders();
-  list.unshift({id:o.id,items:o.items,total:o.total,mail:o.mail,method:o.method,createdAt:new Date().toISOString(),status:"PENDING"});
+  list.unshift({id:o.id,items:o.items,total:o.total,mail:o.mail,method:o.method,ltc:o.ltc||"",createdAt:new Date().toISOString(),status:"PENDING"});
   try{localStorage.setItem(ORDERS_KEY,JSON.stringify(list.slice(0,100)))}catch(e){console.warn("Historique local indisponible",e)}
   renderCustomerOrders();
+}
+function updateCustomerOrder(id,changes){
+  var list=readOrders();
+  var item=list.find(function(x){return x.id===id});
+  if(!item)return false;
+  Object.keys(changes).forEach(function(k){item[k]=changes[k]});
+  try{localStorage.setItem(ORDERS_KEY,JSON.stringify(list))}catch(e){return false}
+  renderCustomerOrders();
+  return true;
 }
 function renderCustomerOrders(){
   var host=$("#ordersList");if(!host)return;
@@ -403,7 +412,7 @@ $("#ordersList").addEventListener("click",function(e){
   resumeCustomerPayment(saved);
 });
 function resumeCustomerPayment(saved){
-  order={id:saved.id,items:saved.items,total:Number(saved.total)||0,mail:saved.mail||"",method:saved.method||"PayPal"};
+  order={id:saved.id,items:saved.items,total:Number(saved.total)||0,mail:saved.mail||"",method:saved.method||"PayPal",ltc:saved.ltc||""};
   hideAll();show($("#modal"));
   if(order.method.toLowerCase().indexOf("litecoin")!==-1||order.method.toLowerCase()==="ltc")showLtc(order.mail,order.total);
   else showPaypal(order.mail,order.total);
@@ -474,7 +483,33 @@ function showLtc(mail,amount){
     }
     field("Adresse LTC",address,box);
     field("Numéro de commande",order.id,box);
-    alertBox("Réseau <b>Litecoin (LTC)</b> uniquement : un envoi sur un autre réseau est perdu. Après le paiement, envoie ton numéro de commande et le hash de transaction au support Discord. Cette page ne vérifie pas automatiquement la réception.",false,box);
+    alertBox("Réseau <b>Litecoin (LTC)</b> uniquement. Après l’envoi, colle ici le TXID fourni par ton portefeuille. Le statut restera en attente tant que la transaction n’aura pas été vérifiée et confirmée.",false,box);
+    var txLabel=document.createElement("label");txLabel.textContent="TXID de ta transaction Litecoin";txLabel.style.fontWeight="600";box.appendChild(txLabel);
+    var txInput=document.createElement("input");txInput.type="text";txInput.className="mail";txInput.id="ltcTxid";txInput.placeholder="Colle ton TXID (64 caractères hexadécimaux)";txInput.autocomplete="off";txInput.spellcheck=false;box.appendChild(txInput);
+    var verify=document.createElement("button");verify.type="button";verify.className="btn";verify.textContent="Vérifier mon paiement";box.appendChild(verify);
+    var result=document.createElement("p");result.className="msg";result.setAttribute("aria-live","polite");box.appendChild(result);
+    verify.addEventListener("click",function(){
+      var txid=txInput.value.trim();
+      if(!/^[a-fA-F0-9]{64}$/.test(txid)){result.textContent="Entre un TXID Litecoin valide de 64 caractères hexadécimaux.";result.className="msg on err";return;}
+      if(!order.ltc){result.textContent="Le montant LTC de cette commande est indisponible. Reprends la commande.";result.className="msg on err";return;}
+      verify.disabled=true;verify.textContent="Vérification…";result.textContent="Vérification de la transaction sur la blockchain Litecoin…";result.className="msg on";
+      fetch("/api/verify-ltc-payment",{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({txid:txid,orderId:order.id,email:order.mail,product:order.items,amountEUR:order.total,expectedLtc:order.ltc})
+      }).then(function(r){return r.json().then(function(data){return {ok:r.ok,data:data}})})
+      .then(function(reply){
+        if(!reply.ok||!reply.data||!reply.data.success){
+          throw new Error(reply.data&&reply.data.error?reply.data.error:"Paiement non confirmé. Vérifie le TXID et réessaie.");
+        }
+        updateCustomerOrder(order.id,{status:"COMPLETED",txid:txid,confirmedAt:new Date().toISOString()});
+        result.textContent="✓ Paiement confirmé ! Ta commande est maintenant Completed.";
+        result.className="msg on";
+        verify.textContent="Paiement confirmé";verify.disabled=true;txInput.disabled=true;
+      }).catch(function(err){
+        result.textContent=err.message||"Impossible de vérifier la transaction pour le moment.";
+        result.className="msg on err";verify.disabled=false;verify.textContent="Réessayer la vérification";
+      });
+    });
     finish(box);
   });
 }
